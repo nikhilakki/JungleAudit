@@ -1,9 +1,18 @@
+import type { ReactNode } from "react";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 import type { AppRoute } from "@/hooks/useHashRoute";
 
 type PrivacyPageProps = {
   onNavigate: (route: AppRoute) => void;
 };
+
+function SectionHeading({ children }: { children: ReactNode }) {
+  return (
+    <h2 className="mt-4 font-display text-xl font-extrabold tracking-tight text-foreground">
+      {children}
+    </h2>
+  );
+}
 
 export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
   return (
@@ -14,14 +23,14 @@ export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
         that receives, stores, or processes your order data.
       </p>
 
-      <h2 className="text-base font-semibold">What stays on your device</h2>
-      <ul className="list-disc space-y-2 pl-5">
+      <SectionHeading>What stays on your device</SectionHeading>
+      <ul className="list-disc space-y-2 rounded-3xl bg-muted p-6 pl-11 md:p-8 md:pl-13">
         <li>Uploaded CSV files and derived analytics tables (in browser memory)</li>
         <li>Charts, filters, and summaries computed from your data</li>
         <li>No account sign-up and no cloud upload of your exports</li>
       </ul>
 
-      <h2 className="text-base font-semibold">Limited network activity</h2>
+      <SectionHeading>Limited network activity</SectionHeading>
       <p>
         Loading JungleAudit fetches static assets from the same website origin — for
         example HTML, JavaScript, styles, and the DuckDB WebAssembly engine. Those
@@ -33,7 +42,7 @@ export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
         events.
       </p>
 
-      <h2 className="text-base font-semibold">Optional usage analytics</h2>
+      <SectionHeading>Optional usage analytics</SectionHeading>
       <p>
         The hosted site may use Google Analytics 4 (GA4) to measure aggregate traffic —
         for example page views and button clicks. GA4 loads only after you acknowledge the
@@ -45,22 +54,22 @@ export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
         JungleAudit locally from the source repository without configuring a measurement ID.
       </p>
 
-      <h2 className="text-base font-semibold">Verify it yourself (optional)</h2>
-      <ol className="list-decimal space-y-2 pl-5">
+      <SectionHeading>Verify it yourself (optional)</SectionHeading>
+      <ol className="list-decimal space-y-2 rounded-3xl bg-muted p-6 pl-11 md:p-8 md:pl-13">
         <li>Open your browser&apos;s developer tools (right-click → Inspect, or F12).</li>
-        <li>Go to the <strong>Network</strong> tab.</li>
+        <li>Go to the <strong className="font-semibold text-foreground">Network</strong> tab.</li>
         <li>Reload the page and watch new requests appear.</li>
         <li>
           Upload your Amazon export and run analysis. You should not see requests that
           upload your CSV data to external domains.
         </li>
         <li>
-          Filter by <strong>Fetch/XHR</strong> to focus on API-style calls. Expect
+          Filter by <strong className="font-semibold text-foreground">Fetch/XHR</strong> to focus on API-style calls. Expect
           same-origin asset loads only; no outbound payload containing your orders.
         </li>
       </ol>
 
-      <h2 className="text-base font-semibold">Third-party hosting</h2>
+      <SectionHeading>Third-party hosting</SectionHeading>
       <p>
         If you access JungleAudit through a hosting provider (for example Cloudflare
         Pages, Vercel, or GitHub Pages), that provider may log standard web server
@@ -69,14 +78,14 @@ export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
         of files you process locally.
       </p>
 
-      <h2 className="text-base font-semibold">Contact</h2>
+      <SectionHeading>Contact</SectionHeading>
       <p>
         Questions about privacy can be directed via{" "}
         <a
           href="https://x.com/nik_akki"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="link-underline"
         >
           @nik_akki on X
         </a>{" "}

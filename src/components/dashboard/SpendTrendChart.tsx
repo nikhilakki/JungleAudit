@@ -1,7 +1,8 @@
 import type { ChartData, ChartOptions, TooltipItem } from "chart.js";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import "@/components/charts/chart-setup";
+import { useChartTheme, withAlpha } from "@/components/charts/useChartTheme";
 import type { TrendGranularity } from "@/lib/analytics/date-filter";
 import type { PeriodSpend } from "@/lib/analytics/spend-trends";
 
@@ -29,30 +30,12 @@ function formatPeriodLabel(period: string, granularity: TrendGranularity): strin
   }
 }
 
-function withAlpha(rgb: string, alpha: number): string {
-  const match = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/.exec(rgb);
-  if (!match) return rgb;
-  return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;
-}
-
-function usePrimaryChartColor() {
-  const probeRef = useRef<HTMLSpanElement>(null);
-  const [color, setColor] = useState("rgb(45, 138, 78)");
-
-  useEffect(() => {
-    if (!probeRef.current) return;
-    setColor(getComputedStyle(probeRef.current).color);
-  }, []);
-
-  return { color, probeRef };
-}
-
 export function SpendTrendChart({
   data,
   currencyCode,
   granularity,
 }: SpendTrendChartProps) {
-  const { color: primaryColor, probeRef } = usePrimaryChartColor();
+  const { primaryColor, gridColor, tickColor, probeRef } = useChartTheme();
   const currencyFormatter = useMemo(
     () =>
       new Intl.NumberFormat(undefined, {
@@ -71,11 +54,11 @@ export function SpendTrendChart({
           label: "Spend",
           data: data.map((point) => point.spend),
           borderColor: primaryColor,
-          backgroundColor: withAlpha(primaryColor, 0.12),
+          backgroundColor: withAlpha(primaryColor, 0.1),
           pointBackgroundColor: primaryColor,
           pointBorderColor: primaryColor,
           pointHoverRadius: 6,
-          pointRadius: 4,
+          pointRadius: 3,
           borderWidth: 2,
           fill: true,
           tension: 0.25,
@@ -129,25 +112,29 @@ export function SpendTrendChart({
           grid: {
             display: false,
           },
+          border: { display: false },
           ticks: {
             maxRotation: 0,
             autoSkip: true,
             maxTicksLimit: 12,
+            color: tickColor,
           },
         },
         y: {
           beginAtZero: true,
           grid: {
-            color: "rgba(128, 128, 128, 0.15)",
+            color: gridColor,
           },
+          border: { display: false },
           ticks: {
+            color: tickColor,
             callback: (value) =>
               currencyFormatter.format(typeof value === "number" ? value : Number(value)),
           },
         },
       },
     }),
-    [currencyFormatter],
+    [currencyFormatter, gridColor, tickColor],
   );
 
   if (data.length === 0) {

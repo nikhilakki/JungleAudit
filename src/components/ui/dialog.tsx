@@ -52,7 +52,7 @@ export function Dialog({
     <DialogContext.Provider value={{ titleId, descriptionId }}>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+          className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           aria-hidden="true"
           onClick={dismissible ? () => onOpenChange?.(false) : undefined}
         />
@@ -61,7 +61,7 @@ export function Dialog({
           aria-modal="true"
           aria-labelledby={titleId}
           aria-describedby={descriptionId}
-          className="relative z-10 flex max-h-[min(90svh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg"
+          className="relative z-10 flex max-h-[min(90svh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-card shadow-[0_16px_40px_rgb(0_0_0/0.12)]"
         >
           {children}
         </div>
@@ -76,7 +76,7 @@ export function DialogHeader({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex flex-col gap-1.5 border-b border-border px-6 py-5", className)}
+      className={cn("flex flex-col gap-1.5 px-6 pt-6 pb-4", className)}
       {...props}
     />
   );
@@ -90,7 +90,10 @@ export function DialogTitle({
   return (
     <h2
       id={titleId}
-      className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+      className={cn(
+        "font-display text-xl font-extrabold leading-none tracking-tight",
+        className,
+      )}
       {...props}
     />
   );
@@ -116,7 +119,7 @@ export function DialogContent({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("overflow-y-auto px-6 py-5 text-sm leading-relaxed", className)}
+      className={cn("overflow-y-auto px-6 py-2 text-sm leading-relaxed", className)}
       {...props}
     />
   );
@@ -129,7 +132,7 @@ export function DialogFooter({
   return (
     <div
       className={cn(
-        "flex flex-col-reverse gap-2 border-t border-border px-6 py-4 sm:flex-row sm:justify-end",
+        "flex flex-col-reverse gap-2 px-6 pt-4 pb-6 sm:flex-row sm:justify-end",
         className,
       )}
       {...props}

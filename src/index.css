@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@fontsource-variable/figtree/index.css";
+@import "@fontsource-variable/inter/index.css";
 
 @theme inline {
   --color-background: var(--background);
@@ -13,42 +15,42 @@
   --color-destructive: var(--destructive);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --color-cobalt: var(--cobalt);
+  --color-cobalt-foreground: var(--cobalt-foreground);
+  --color-pink: var(--pink);
+  --color-cyan: var(--cyan);
+  --color-tan: var(--tan);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 8px);
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Figtree Variable", "Inter Variable", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.985 0.002 106);
-  --foreground: oklch(0.2 0.02 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 260);
-  --muted: oklch(0.96 0.005 106);
-  --muted-foreground: oklch(0.5 0.02 260);
-  --border: oklch(0.9 0.01 106);
-  --primary: oklch(0.45 0.14 145);
-  --primary-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.55 0.2 25);
-  --accent: oklch(0.94 0.03 145);
-  --accent-foreground: oklch(0.3 0.08 145);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.16 0.02 260);
-    --foreground: oklch(0.95 0.01 106);
-    --card: oklch(0.2 0.02 260);
-    --card-foreground: oklch(0.95 0.01 106);
-    --muted: oklch(0.25 0.02 260);
-    --muted-foreground: oklch(0.65 0.02 260);
-    --border: oklch(0.3 0.02 260);
-    --primary: oklch(0.65 0.14 145);
-    --primary-foreground: oklch(0.15 0.02 260);
-    --destructive: oklch(0.6 0.2 25);
-    --accent: oklch(0.28 0.04 145);
-    --accent-foreground: oklch(0.9 0.03 145);
-  }
+  --radius: 1rem;
+  --background: #fdfdfd;
+  --foreground: #0a0a0b;
+  --card: #ffffff;
+  --card-foreground: #0a0a0b;
+  --muted: #f3f3f3;
+  --muted-foreground: #6f6f76;
+  --border: #e9e9ea;
+  --primary: #0a0a0b;
+  --primary-foreground: #ffffff;
+  --destructive: #e5484d;
+  --accent: #eeeefe;
+  --accent-foreground: #4341c9;
+  --cobalt: #5b5fe0;
+  --cobalt-foreground: #ffffff;
+  --pink: #ee92b6;
+  --cyan: #3fdec4;
+  --tan: #dd9260;
+  --grad-pink: #f6d2dd;
+  --grad-lavender: #a898ec;
+  --grad-periwinkle: #93b3ee;
+  --grad-cyan: #7cdfd2;
 }
 
 body {
@@ -56,9 +58,53 @@ body {
   min-height: 100svh;
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 #root {
   min-height: 100svh;
+}
+
+/* Finsage pastel gradient wash: pink / lavender / periwinkle / cyan on near-white */
+.hero-gradient {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(52% 44% at 8% 0%, var(--grad-pink) 0%, transparent 100%),
+    radial-gradient(46% 42% at 42% 4%, var(--grad-lavender) 0%, transparent 100%),
+    radial-gradient(54% 48% at 72% 8%, var(--grad-periwinkle) 0%, transparent 100%),
+    radial-gradient(44% 46% at 100% 22%, var(--grad-cyan) 0%, transparent 100%),
+    radial-gradient(38% 30% at 24% 34%, color-mix(in srgb, var(--grad-lavender) 55%, transparent) 0%, transparent 100%);
+}
+
+/* Film-grain noise overlay (Finsage texture). Container gets position/isolation;
+   place content in a relative z-10 wrapper if it must stack above the grain. */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.4;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Finsage underlined nav link */
+.link-underline {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
+  font-weight: 500;
+}
+.link-underline:hover {
+  text-decoration-thickness: 2.5px;
 }

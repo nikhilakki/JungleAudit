@@ -27,8 +27,8 @@ export function FileDropzone({ disabled, onFilesSelected }: FileDropzoneProps) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-dashed border-border bg-card p-8 text-center transition-colors",
-        isDragging && "border-primary bg-accent/40",
+        "rounded-3xl bg-muted p-8 text-center transition-colors md:p-10",
+        isDragging && "bg-accent",
         disabled && "opacity-60",
       )}
       onDragEnter={(event) => {
@@ -49,17 +49,16 @@ export function FileDropzone({ disabled, onFilesSelected }: FileDropzoneProps) {
         void handleFiles(event.dataTransfer.files);
       }}
     >
-      <div className="mx-auto flex max-w-xl flex-col items-center gap-4">
+      <div className="mx-auto flex max-w-xl flex-col items-center gap-5">
         <Mascot
           size="xl"
           decorative
-          className={cn(
-            "border-primary/20 shadow-md transition-transform",
-            isDragging && "scale-105 border-primary/40",
-          )}
+          className={cn("transition-transform", isDragging && "scale-105")}
         />
-        <div className="flex flex-col gap-2">
-          <p className="text-lg font-medium">Drop your Amazon export CSVs here</p>
+        <div className="flex flex-col gap-1.5">
+          <p className="font-display text-xl font-extrabold tracking-tight">
+            Drop Your Amazon Export CSVs Here.
+          </p>
           <p className="text-sm text-muted-foreground">
             Order History, Digital Content Orders, Cart History, returns files, and more.
           </p>
@@ -68,8 +67,9 @@ export function FileDropzone({ disabled, onFilesSelected }: FileDropzoneProps) {
           type="button"
           disabled={disabled}
           onClick={() => inputRef.current?.click()}
+          className="h-11 rounded-full bg-primary px-7 font-semibold text-primary-foreground"
         >
-          Choose files
+          Browse files
         </Button>
         <input
           ref={inputRef}

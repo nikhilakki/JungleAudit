@@ -17,16 +17,19 @@ export function DisclaimerPage({ onNavigate }: DisclaimerPageProps) {
         Amazon exports can be incomplete, duplicated, or formatted differently over time.
         Treat all figures as estimates for personal insight, not as official records.
       </p>
-      <p>
-        You are responsible for the files you choose to analyze and for how you use the
-        results. JungleAudit is provided &quot;as is&quot; without warranties of any kind.
-      </p>
+      <div className="rounded-3xl bg-muted p-6 md:p-8">
+        <p>
+          You are responsible for the files you choose to analyze and for how you use the
+          results. JungleAudit is provided &quot;as is&quot; without warranties of any
+          kind.
+        </p>
+      </div>
       <p>
         Your data stays on your device. JungleAudit does not send your CSV contents to
         any server. See the{" "}
         <button
           type="button"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="link-underline"
           onClick={() => onNavigate("privacy")}
         >
           Privacy Policy

@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, type CurrencyInfo } from "@/lib/currency";
 import type { RefundSummary } from "@/lib/analytics/returns";
 
@@ -20,55 +19,43 @@ export function NetSpendSummary({
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      <Card>
-        <CardHeader>
-          <CardTitle>Gross spend</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-semibold tracking-tight">
-            {formatCurrency(grossSpend, currency.code)}
-          </p>
-        </CardContent>
-      </Card>
+      <div className="rounded-3xl bg-muted p-6 md:p-7">
+        <p className="text-sm font-medium text-muted-foreground">Gross spend</p>
+        <p className="mt-3 font-display text-3xl font-extrabold tracking-tight md:text-4xl">
+          {formatCurrency(grossSpend, currency.code)}
+        </p>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Refunded</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-semibold tracking-tight">
-            {formatCurrency(refunded, currency.code)}
+      <div className="rounded-3xl bg-muted p-6 md:p-7">
+        <p className="text-sm font-medium text-muted-foreground">Refunded</p>
+        <p className="mt-3 font-display text-3xl font-extrabold tracking-tight text-destructive md:text-4xl">
+          {formatCurrency(refunded, currency.code)}
+        </p>
+        {refundSummary ? (
+          <p className="mt-3 text-sm text-muted-foreground">
+            {refundSummary.refund_count.toLocaleString()} refund events
+            {refundSummary.return_rate_pct !== null
+              ? ` · ${refundSummary.return_rate_pct}% of orders`
+              : ""}
           </p>
-          {refundSummary ? (
-            <p className="mt-2 text-sm text-muted-foreground">
-              {refundSummary.refund_count.toLocaleString()} refund events
-              {refundSummary.return_rate_pct !== null
-                ? ` · ${refundSummary.return_rate_pct}% of orders`
-                : ""}
-            </p>
-          ) : (
-            <p className="mt-2 text-sm text-muted-foreground">
-              Upload returns/refund CSVs to see refunds
-            </p>
-          )}
-        </CardContent>
-      </Card>
+        ) : (
+          <p className="mt-3 text-sm text-muted-foreground">
+            Upload returns/refund CSVs to see refunds
+          </p>
+        )}
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Net spend</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-semibold tracking-tight">
-            {formatCurrency(net, currency.code)}
+      <div className="rounded-3xl bg-muted p-6 md:p-7">
+        <p className="text-sm font-medium text-muted-foreground">Net spend</p>
+        <p className="mt-3 font-display text-3xl font-extrabold tracking-tight md:text-4xl">
+          {formatCurrency(net, currency.code)}
+        </p>
+        {replacementCount > 0 ? (
+          <p className="mt-3 text-sm text-muted-foreground">
+            {replacementCount.toLocaleString()} replacement orders on file
           </p>
-          {replacementCount > 0 ? (
-            <p className="mt-2 text-sm text-muted-foreground">
-              {replacementCount.toLocaleString()} replacement orders on file
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
+        ) : null}
+      </div>
     </div>
   );
 }

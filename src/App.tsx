@@ -32,7 +32,7 @@ const TermsPage = lazy(() =>
 function RouteFallback({ label }: { label: string }) {
   return (
     <div
-      className="flex min-h-[40vh] items-center justify-center text-sm text-muted-foreground"
+      className="flex min-h-[40vh] items-center justify-center font-display text-sm font-medium tracking-tight text-muted-foreground"
       role="status"
       aria-live="polite"
     >
@@ -81,32 +81,38 @@ export default function App() {
         onNavigate={handleNavigate}
       />
 
-      <div className="mx-auto flex min-h-svh w-full max-w-6xl flex-col gap-8 px-4 py-10 md:px-8">
-        {route === "landing" ? <LandingPage onNavigate={navigate} /> : null}
+      <div className="flex min-h-svh flex-col">
+        {route === "landing" ? (
+          <LandingPage onNavigate={navigate} />
+        ) : (
+          <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 md:px-8">
+            {route === "app" ? (
+              <Suspense fallback={<RouteFallback label="Loading analyzer…" />}>
+                <HomePage />
+              </Suspense>
+            ) : null}
 
-        {route === "app" ? (
-          <Suspense fallback={<RouteFallback label="Loading analyzer…" />}>
-            <HomePage />
-          </Suspense>
-        ) : null}
+            {route === "disclaimer" ? (
+              <Suspense fallback={<RouteFallback label="Loading…" />}>
+                <DisclaimerPage onNavigate={navigate} />
+              </Suspense>
+            ) : null}
+            {route === "privacy" ? (
+              <Suspense fallback={<RouteFallback label="Loading…" />}>
+                <PrivacyPage onNavigate={navigate} />
+              </Suspense>
+            ) : null}
+            {route === "terms" ? (
+              <Suspense fallback={<RouteFallback label="Loading…" />}>
+                <TermsPage onNavigate={navigate} />
+              </Suspense>
+            ) : null}
+          </div>
+        )}
 
-        {route === "disclaimer" ? (
-          <Suspense fallback={<RouteFallback label="Loading…" />}>
-            <DisclaimerPage onNavigate={navigate} />
-          </Suspense>
-        ) : null}
-        {route === "privacy" ? (
-          <Suspense fallback={<RouteFallback label="Loading…" />}>
-            <PrivacyPage onNavigate={navigate} />
-          </Suspense>
-        ) : null}
-        {route === "terms" ? (
-          <Suspense fallback={<RouteFallback label="Loading…" />}>
-            <TermsPage onNavigate={navigate} />
-          </Suspense>
-        ) : null}
-
-        <SiteFooter onNavigate={navigate} onStartApp={handleStartApp} />
+        <div className="mx-auto mt-auto w-full max-w-6xl px-4 md:px-8">
+          <SiteFooter onNavigate={navigate} onStartApp={handleStartApp} />
+        </div>
       </div>
     </>
   );

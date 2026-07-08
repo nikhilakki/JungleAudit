@@ -9,7 +9,7 @@ export function Alert({
     <div
       role="alert"
       className={cn(
-        "relative w-full rounded-lg border border-border bg-card p-4 text-sm",
+        "relative w-full rounded-2xl border border-transparent bg-card p-4 text-sm shadow-[0_1px_2px_rgb(0_0_0/0.04)]",
         className,
       )}
       {...props}
@@ -21,7 +21,12 @@ export function AlertTitle({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h5 className={cn("mb-1 font-medium leading-none", className)} {...props} />;
+  return (
+    <h5
+      className={cn("mb-1 font-semibold leading-none tracking-tight", className)}
+      {...props}
+    />
+  );
 }
 
 export function AlertDescription({

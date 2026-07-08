@@ -2,7 +2,7 @@ import type { ChartData, ChartOptions } from "chart.js";
 import { useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 import "@/components/charts/chart-setup";
-import { useChartTheme, withAlpha } from "@/components/charts/useChartTheme";
+import { useChartTheme } from "@/components/charts/useChartTheme";
 import type { ReturnReasonRow } from "@/lib/analytics/returns";
 
 interface ReturnReasonsChartProps {
@@ -11,7 +11,7 @@ interface ReturnReasonsChartProps {
 }
 
 export function ReturnReasonsChart({ data, currencyCode }: ReturnReasonsChartProps) {
-  const { primaryColor, probeRef } = useChartTheme();
+  const { accentColor, gridColor, tickColor, probeRef } = useChartTheme();
   const formatter = useMemo(
     () =>
       new Intl.NumberFormat(undefined, {
@@ -29,12 +29,12 @@ export function ReturnReasonsChart({ data, currencyCode }: ReturnReasonsChartPro
         {
           label: "Refunded",
           data: data.map((row) => row.amount),
-          backgroundColor: withAlpha(primaryColor, 0.75),
-          borderRadius: 4,
+          backgroundColor: accentColor,
+          borderRadius: 8,
         },
       ],
     }),
-    [data, primaryColor],
+    [accentColor, data],
   );
 
   const options = useMemo<ChartOptions<"bar">>(
@@ -57,17 +57,22 @@ export function ReturnReasonsChart({ data, currencyCode }: ReturnReasonsChartPro
       scales: {
         x: {
           beginAtZero: true,
+          grid: { color: gridColor },
+          border: { display: false },
           ticks: {
+            color: tickColor,
             callback: (value) =>
               formatter.format(typeof value === "number" ? value : Number(value)),
           },
         },
         y: {
           grid: { display: false },
+          border: { display: false },
+          ticks: { color: tickColor },
         },
       },
     }),
-    [data, formatter],
+    [data, formatter, gridColor, tickColor],
   );
 
   if (data.length === 0) {

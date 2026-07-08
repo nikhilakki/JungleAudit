@@ -14,7 +14,7 @@ export function PaymentBreakdownChart({
   data,
   currencyCode,
 }: PaymentBreakdownChartProps) {
-  const { colors, probeRef } = useChartTheme();
+  const { colors, tickColor, probeRef } = useChartTheme();
   const formatter = useMemo(
     () =>
       new Intl.NumberFormat(undefined, {
@@ -44,10 +44,11 @@ export function PaymentBreakdownChart({
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      cutout: "68%",
       plugins: {
         legend: {
           position: "right",
-          labels: { boxWidth: 12, padding: 12 },
+          labels: { boxWidth: 8, boxHeight: 8, padding: 14, color: tickColor },
         },
         tooltip: {
           callbacks: {
@@ -60,7 +61,7 @@ export function PaymentBreakdownChart({
         },
       },
     }),
-    [data, formatter],
+    [data, formatter, tickColor],
   );
 
   if (data.length === 0) {

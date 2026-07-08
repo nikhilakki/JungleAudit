@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "1.33.1-dev57.0",
+    "@fontsource-variable/figtree": "^5.2.10",
+    "@fontsource-variable/inter": "^5.2.8",
     "chart.js": "^4.5.1",
     "chartjs-plugin-zoom": "^2.2.0",
     "class-variance-authority": "^0.7.1",

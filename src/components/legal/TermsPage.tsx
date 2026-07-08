@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 import type { AppRoute } from "@/hooks/useHashRoute";
 
@@ -5,26 +6,34 @@ type TermsPageProps = {
   onNavigate: (route: AppRoute) => void;
 };
 
+function SectionHeading({ children }: { children: ReactNode }) {
+  return (
+    <h2 className="mt-4 font-display text-xl font-extrabold tracking-tight text-foreground">
+      {children}
+    </h2>
+  );
+}
+
 export function TermsPage({ onNavigate }: TermsPageProps) {
   return (
     <LegalPageLayout title="Terms of Service" onNavigate={onNavigate}>
       <p>Last updated: July 8, 2026</p>
 
-      <h2 className="text-base font-semibold">Agreement</h2>
+      <SectionHeading>Agreement</SectionHeading>
       <p>
         By using JungleAudit, you agree to these Terms of Service. If you do not agree,
         do not use the site.
       </p>
 
-      <h2 className="text-base font-semibold">The service</h2>
+      <SectionHeading>The service</SectionHeading>
       <p>
         JungleAudit is a free, browser-based tool for analyzing Amazon &quot;Request My
         Data&quot; exports. The software runs on your device. We may update, suspend, or
         discontinue the site at any time without notice.
       </p>
 
-      <h2 className="text-base font-semibold">Your responsibilities</h2>
-      <ul className="list-disc space-y-2 pl-5">
+      <SectionHeading>Your responsibilities</SectionHeading>
+      <ul className="list-disc space-y-2 rounded-3xl bg-muted p-6 pl-11 md:p-8 md:pl-13">
         <li>You must have the right to use the data files you upload.</li>
         <li>You use the tool and its output at your own risk.</li>
         <li>
@@ -33,14 +42,14 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
         </li>
       </ul>
 
-      <h2 className="text-base font-semibold">No professional advice</h2>
+      <SectionHeading>No professional advice</SectionHeading>
       <p>
         JungleAudit does not provide financial, tax, accounting, or legal advice. Outputs
         are informational only. Consult qualified professionals for decisions that depend
         on accurate financial or legal records.
       </p>
 
-      <h2 className="text-base font-semibold">Disclaimer of warranties</h2>
+      <SectionHeading>Disclaimer of warranties</SectionHeading>
       <p>
         The site and software are provided &quot;as is&quot; and &quot;as available&quot;
         without warranties of merchantability, fitness for a particular purpose, or
@@ -48,14 +57,14 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
         operation.
       </p>
 
-      <h2 className="text-base font-semibold">Limitation of liability</h2>
+      <SectionHeading>Limitation of liability</SectionHeading>
       <p>
         To the fullest extent permitted by law, JungleAudit and its contributors are not
         liable for any indirect, incidental, special, consequential, or punitive damages,
         or any loss of data, profits, or goodwill arising from your use of the site.
       </p>
 
-      <h2 className="text-base font-semibold">Open source</h2>
+      <SectionHeading>Open source</SectionHeading>
       <p>
         JungleAudit is open source. Use of the source code is also governed by the
         license in the{" "}
@@ -63,20 +72,20 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
           href="https://github.com/nikhilakki/subprime"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="link-underline"
         >
           GitHub repository
         </a>
         .
       </p>
 
-      <h2 className="text-base font-semibold">Changes</h2>
+      <SectionHeading>Changes</SectionHeading>
       <p>
         We may revise these terms. Continued use after changes are posted constitutes
         acceptance of the updated terms. See also our{" "}
         <button
           type="button"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="link-underline"
           onClick={() => onNavigate("privacy")}
         >
           Privacy Policy
@@ -84,7 +93,7 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
         and{" "}
         <button
           type="button"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="link-underline"
           onClick={() => onNavigate("disclaimer")}
         >
           Disclaimer

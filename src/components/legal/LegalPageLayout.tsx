@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import type { AppRoute } from "@/hooks/useHashRoute";
 
 type LegalPageLayoutProps = {
@@ -11,24 +10,25 @@ type LegalPageLayoutProps = {
 
 export function LegalPageLayout({ title, children, onNavigate }: LegalPageLayoutProps) {
   return (
-    <article className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <Button
+    <article className="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4">
+      <button
         type="button"
-        variant="ghost"
-        size="sm"
-        className="w-fit px-0 hover:bg-transparent"
+        className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-foreground underline-offset-4 hover:underline"
         onClick={() => onNavigate("landing")}
       >
-        <ArrowLeft className="size-4" />
+        <ArrowLeft className="size-4" aria-hidden="true" />
         Back to JungleAudit
-      </Button>
-      <header className="flex flex-col gap-2">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
+      </button>
+      <header className="flex flex-col gap-3">
+        <p className="flex items-center gap-2 text-sm font-medium">
+          <span className="size-1.5 rounded-full bg-foreground" aria-hidden="true" />
           JungleAudit
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="font-display text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl">
+          {title}.
+        </h1>
       </header>
-      <div className="prose-legal flex flex-col gap-4 text-sm leading-relaxed text-foreground">
+      <div className="flex flex-col gap-4 text-sm leading-relaxed text-muted-foreground">
         {children}
       </div>
     </article>

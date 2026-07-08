@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { DateFilterPreset, DateFilterState } from "@/lib/analytics/date-filter";
 
@@ -17,7 +16,7 @@ const PRESETS: Array<{ id: DateFilterPreset; label: string }> = [
 ];
 
 const fieldClass =
-  "h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40";
+  "h-10 rounded-xl border border-border bg-card px-3.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30";
 
 export function DateRangeFilter({
   value,
@@ -31,17 +30,25 @@ export function DateRangeFilter({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap gap-2">
-        {PRESETS.map((preset) => (
-          <Button
-            key={preset.id}
-            type="button"
-            size="sm"
-            variant={value.preset === preset.id ? "default" : "outline"}
-            onClick={() => setPreset(preset.id)}
-          >
-            {preset.label}
-          </Button>
-        ))}
+        {PRESETS.map((preset) => {
+          const isActive = value.preset === preset.id;
+          return (
+            <button
+              key={preset.id}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => setPreset(preset.id)}
+              className={cn(
+                "h-9 rounded-full px-4 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-foreground/70 hover:text-foreground",
+              )}
+            >
+              {preset.label}
+            </button>
+          );
+        })}
       </div>
 
       {value.preset === "week" ? (

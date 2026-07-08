@@ -5,15 +5,9 @@ export function SpendTrendMock({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 240 120"
-      className={cn("w-full text-primary", className)}
+      className={cn("w-full text-foreground", className)}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.35" />
-        </linearGradient>
-      </defs>
       {bars.map((h, i) => (
         <rect
           key={i}
@@ -22,16 +16,16 @@ export function SpendTrendMock({ className }: { className?: string }) {
           width={18}
           height={h}
           rx={4}
-          fill="url(#barGrad)"
+          fill="currentColor"
+          opacity={0.14}
         />
       ))}
       <polyline
         fill="none"
         stroke="currentColor"
-        strokeWidth="2.5"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        opacity="0.55"
         points={bars
           .map((h, i) => `${21 + i * 28},${110 - h - 6}`)
           .join(" ")}
@@ -43,13 +37,13 @@ export function SpendTrendMock({ className }: { className?: string }) {
 export function PaymentDonutMock({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 120 120" className={cn("size-full", className)} aria-hidden="true">
-      <circle cx="60" cy="60" r="44" fill="none" stroke="oklch(0.9 0.01 106)" strokeWidth="14" />
+      <circle cx="60" cy="60" r="44" fill="none" stroke="var(--muted)" strokeWidth="14" />
       <circle
         cx="60"
         cy="60"
         r="44"
         fill="none"
-        stroke="oklch(0.45 0.14 145)"
+        stroke="var(--cobalt)"
         strokeWidth="14"
         strokeDasharray="138 138"
         strokeDashoffset="34"
@@ -60,7 +54,7 @@ export function PaymentDonutMock({ className }: { className?: string }) {
         cy="60"
         r="44"
         fill="none"
-        stroke="oklch(0.55 0.2 25)"
+        stroke="var(--pink)"
         strokeWidth="14"
         strokeDasharray="138 138"
         strokeDashoffset="96"
@@ -71,7 +65,7 @@ export function PaymentDonutMock({ className }: { className?: string }) {
         cy="60"
         r="44"
         fill="none"
-        stroke="oklch(0.6 0.12 250)"
+        stroke="var(--tan)"
         strokeWidth="14"
         strokeDasharray="138 138"
         strokeDashoffset="118"
@@ -88,25 +82,25 @@ export function LocalPrivacyDiagram({ className }: { className?: string }) {
       className={cn("w-full max-w-md", className)}
       aria-hidden="true"
     >
-      <rect x="8" y="24" width="120" height="88" rx="12" fill="var(--card)" stroke="var(--border)" />
+      <rect x="8" y="24" width="120" height="88" rx="16" fill="var(--card)" stroke="var(--border)" strokeWidth="1.5" />
       <text x="68" y="52" textAnchor="middle" fontSize="11" fill="var(--muted-foreground)">
         Your device
       </text>
-      <rect x="28" y="62" width="80" height="10" rx="3" fill="oklch(0.45 0.14 145 / 0.35)" />
-      <rect x="28" y="78" width="56" height="10" rx="3" fill="oklch(0.45 0.14 145 / 0.2)" />
-      <rect x="28" y="94" width="64" height="10" rx="3" fill="oklch(0.45 0.14 145 / 0.25)" />
+      <rect x="28" y="62" width="80" height="10" rx="5" fill="var(--cobalt)" opacity="0.55" />
+      <rect x="28" y="78" width="56" height="10" rx="5" fill="var(--cobalt)" opacity="0.3" />
+      <rect x="28" y="94" width="64" height="10" rx="5" fill="var(--cobalt)" opacity="0.4" />
 
       <path
         d="M140 68 H175"
-        stroke="oklch(0.55 0.2 25)"
-        strokeWidth="2"
+        stroke="var(--destructive)"
+        strokeWidth="1.5"
         strokeDasharray="5 4"
       />
-      <text x="157" y="58" textAnchor="middle" fontSize="9" fill="oklch(0.55 0.2 25)">
+      <text x="157" y="58" textAnchor="middle" fontSize="9" fill="var(--destructive)">
         blocked
       </text>
 
-      <rect x="192" y="24" width="120" height="88" rx="12" fill="var(--muted)" stroke="var(--border)" strokeDasharray="4 3" opacity="0.65" />
+      <rect x="192" y="24" width="120" height="88" rx="16" fill="var(--muted)" stroke="var(--border)" strokeDasharray="4 3" opacity="0.65" />
       <text x="252" y="52" textAnchor="middle" fontSize="11" fill="var(--muted-foreground)">
         Cloud upload
       </text>
@@ -117,31 +111,53 @@ export function LocalPrivacyDiagram({ className }: { className?: string }) {
   );
 }
 
-export function FlowStepsVisual() {
-  const steps = [
-    { label: "Request data", sub: "Amazon export" },
-    { label: "Drop CSVs", sub: "In browser" },
-    { label: "See insights", sub: "Charts & totals" },
-  ];
+const FLOW_STEPS = [
+  {
+    title: "Upload CSVs",
+    sub: "Drop the files from your Amazon export",
+    status: "Complete",
+  },
+  {
+    title: "Auto-map schema",
+    sub: "Columns are matched to canonical fields",
+    status: "Processing",
+  },
+  {
+    title: "Explore insights",
+    sub: "Charts, totals, refunds, and trends",
+    status: "Waiting",
+  },
+] as const;
 
+export function FlowStepsVisual() {
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
-      {steps.map((step, i) => (
-        <div key={step.label} className="relative flex flex-col items-center gap-2 text-center">
-          <div className="flex size-12 items-center justify-center rounded-full border-2 border-primary bg-primary/10 text-lg font-semibold text-primary">
-            {i + 1}
-          </div>
-          <p className="font-medium">{step.label}</p>
-          <p className="text-sm text-muted-foreground">{step.sub}</p>
-          {i < steps.length - 1 ? (
+    <div className="rounded-3xl bg-muted p-6 md:p-8">
+      <ol className="flex flex-col">
+        {FLOW_STEPS.map((step, i) => (
+          <li key={step.title} className="flex gap-4">
+            <div className="flex flex-col items-center" aria-hidden="true">
+              <span className="mt-6 size-2 shrink-0 rounded-full bg-foreground" />
+              {i < FLOW_STEPS.length - 1 ? (
+                <span className="mt-2 w-px flex-1 bg-border" />
+              ) : null}
+            </div>
             <div
-              className="absolute top-6 hidden h-0.5 w-full bg-gradient-to-r from-primary/40 to-primary/10 sm:block"
-              style={{ left: "58%", width: "84%" }}
-              aria-hidden="true"
-            />
-          ) : null}
-        </div>
-      ))}
+              className={cn(
+                "flex-1 rounded-2xl bg-card p-5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]",
+                i < FLOW_STEPS.length - 1 && "mb-4",
+              )}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-semibold">{step.title}</p>
+                <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground/70">
+                  {step.status}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">{step.sub}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

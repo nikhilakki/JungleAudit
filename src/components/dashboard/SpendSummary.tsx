@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, type CurrencyInfo } from "@/lib/currency";
 import type { SpendSummary as SpendSummaryData } from "@/lib/analytics/spend-trends";
 
@@ -33,50 +32,38 @@ export function SpendSummary({ summary, currency }: SpendSummaryProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      <Card>
-        <CardHeader>
-          <CardTitle>Total spend</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-semibold tracking-tight">
-            {formatCurrency(summary.total_spend, currency.code)}
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">{currencyNote}</p>
-        </CardContent>
-      </Card>
+      <div className="rounded-3xl bg-muted p-6 md:p-7">
+        <p className="text-sm font-medium text-muted-foreground">Total spend</p>
+        <p className="mt-3 font-display text-3xl font-extrabold tracking-tight md:text-4xl">
+          {formatCurrency(summary.total_spend, currency.code)}
+        </p>
+        <p className="mt-3 text-sm text-muted-foreground">{currencyNote}</p>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Orders</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-semibold tracking-tight">
-            {summary.order_count.toLocaleString()}
+      <div className="rounded-3xl bg-muted p-6 md:p-7">
+        <p className="text-sm font-medium text-muted-foreground">Orders</p>
+        <p className="mt-3 font-display text-3xl font-extrabold tracking-tight md:text-4xl">
+          {summary.order_count.toLocaleString()}
+        </p>
+        {dateRange ? (
+          <p className="mt-3 text-sm text-muted-foreground">{dateRange}</p>
+        ) : null}
+        {summary.skipped_rows > 0 ? (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {summary.skipped_rows.toLocaleString()} rows skipped (missing date/price or cancelled)
           </p>
-          {dateRange ? (
-            <p className="mt-2 text-sm text-muted-foreground">{dateRange}</p>
-          ) : null}
-          {summary.skipped_rows > 0 ? (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {summary.skipped_rows.toLocaleString()} rows skipped (missing date/price or cancelled)
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
+        ) : null}
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Avg order value</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-semibold tracking-tight">
-            {aov !== null ? formatCurrency(aov, currency.code) : "—"}
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Total spend divided by distinct orders
-          </p>
-        </CardContent>
-      </Card>
+      <div className="rounded-3xl bg-muted p-6 md:p-7">
+        <p className="text-sm font-medium text-muted-foreground">Avg order value</p>
+        <p className="mt-3 font-display text-3xl font-extrabold tracking-tight md:text-4xl">
+          {aov !== null ? formatCurrency(aov, currency.code) : "—"}
+        </p>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Total spend divided by distinct orders
+        </p>
+      </div>
     </div>
   );
 }

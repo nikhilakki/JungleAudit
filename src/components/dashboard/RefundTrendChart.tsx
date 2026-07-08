@@ -35,7 +35,7 @@ export function RefundTrendChart({
   currencyCode,
   granularity,
 }: RefundTrendChartProps) {
-  const { primaryColor, probeRef } = useChartTheme();
+  const { accentColor, gridColor, tickColor, probeRef } = useChartTheme();
   const formatter = useMemo(
     () =>
       new Intl.NumberFormat(undefined, {
@@ -53,15 +53,18 @@ export function RefundTrendChart({
         {
           label: "Refunded",
           data: data.map((point) => point.refunded),
-          borderColor: primaryColor,
-          backgroundColor: withAlpha(primaryColor, 0.12),
-          pointBackgroundColor: primaryColor,
+          borderColor: accentColor,
+          backgroundColor: withAlpha(accentColor, 0.12),
+          pointBackgroundColor: accentColor,
+          pointBorderColor: accentColor,
+          pointRadius: 3,
+          borderWidth: 2,
           fill: true,
           tension: 0.25,
         },
       ],
     }),
-    [data, granularity, primaryColor],
+    [accentColor, data, granularity],
   );
 
   const options = useMemo<ChartOptions<"line">>(
@@ -84,17 +87,24 @@ export function RefundTrendChart({
         },
       },
       scales: {
-        x: { grid: { display: false }, ticks: { maxTicksLimit: 12 } },
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { maxTicksLimit: 12, color: tickColor },
+        },
         y: {
           beginAtZero: true,
+          grid: { color: gridColor },
+          border: { display: false },
           ticks: {
+            color: tickColor,
             callback: (value) =>
               formatter.format(typeof value === "number" ? value : Number(value)),
           },
         },
       },
     }),
-    [formatter],
+    [formatter, gridColor, tickColor],
   );
 
   if (data.length === 0) {

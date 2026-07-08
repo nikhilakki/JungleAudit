@@ -45,11 +45,7 @@ export function Mascot({
       decoding="async"
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : undefined}
-      className={cn(
-        "shrink-0 rounded-2xl border border-border/60 bg-card object-cover shadow-sm",
-        sizeClasses[size],
-        className,
-      )}
+      className={cn("shrink-0 rounded-full object-cover", sizeClasses[size], className)}
     />
   );
 }

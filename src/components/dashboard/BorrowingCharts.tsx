@@ -23,7 +23,7 @@ function formatPeriodLabel(period: string, granularity: TrendGranularity): strin
 }
 
 export function BorrowingCharts({ byType, trend, granularity }: BorrowingChartsProps) {
-  const { colors, primaryColor, probeRef } = useChartTheme();
+  const { colors, primaryColor, gridColor, tickColor, probeRef } = useChartTheme();
 
   const typeData = useMemo<ChartData<"doughnut">>(
     () => ({
@@ -47,7 +47,7 @@ export function BorrowingCharts({ byType, trend, granularity }: BorrowingChartsP
           label: "Borrows",
           data: trend.map((p) => p.count),
           backgroundColor: primaryColor,
-          borderRadius: 4,
+          borderRadius: 8,
         },
       ],
     }),
@@ -58,9 +58,15 @@ export function BorrowingCharts({ byType, trend, granularity }: BorrowingChartsP
     () => ({
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } },
+      cutout: "68%",
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { boxWidth: 8, boxHeight: 8, padding: 14, color: tickColor },
+        },
+      },
     }),
-    [],
+    [tickColor],
   );
 
   const barOptions = useMemo<ChartOptions<"bar">>(
@@ -69,11 +75,20 @@ export function BorrowingCharts({ byType, trend, granularity }: BorrowingChartsP
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { display: false } },
-        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { color: tickColor },
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: gridColor },
+          border: { display: false },
+          ticks: { stepSize: 1, color: tickColor },
+        },
       },
     }),
-    [],
+    [gridColor, tickColor],
   );
 
   if (byType.length === 0 && trend.length === 0) {

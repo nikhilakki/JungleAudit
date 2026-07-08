@@ -1,6 +1,5 @@
 import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   FILE_TYPE_LABELS,
   type FileSchemaInfo,
@@ -32,10 +31,12 @@ export function SchemaPreview({ schemas, defaultOpen = false }: SchemaPreviewPro
   const missingCount = schemas.filter((s) => s.missingRequired.length > 0).length;
 
   return (
-    <details className="group rounded-xl border border-border bg-card" open={defaultOpen}>
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-4 [&::-webkit-details-marker]:hidden">
+    <details className="group rounded-3xl bg-muted" open={defaultOpen}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-5 [&::-webkit-details-marker]:hidden md:px-8">
         <div className="flex flex-col gap-1">
-          <span className="font-semibold tracking-tight">Column mappings</span>
+          <span className="font-display font-extrabold tracking-tight">
+            Column mappings
+          </span>
           <span className="text-sm text-muted-foreground">
             {schemas.length} file{schemas.length === 1 ? "" : "s"} detected
             {missingCount > 0
@@ -51,65 +52,72 @@ export function SchemaPreview({ schemas, defaultOpen = false }: SchemaPreviewPro
         />
       </summary>
 
-      <div className="flex flex-col gap-4 border-t border-border px-6 pb-6 pt-4">
+      <div className="flex flex-col gap-4 px-6 pb-6 md:px-8 md:pb-8">
         {schemas.map((schema) => (
-          <Card key={`${schema.originalName}-${schema.rawTable}`} className="border-border/60">
-            <CardHeader className="pb-3">
+          <div
+            key={`${schema.originalName}-${schema.rawTable}`}
+            className="rounded-2xl bg-card p-5 shadow-[0_1px_2px_rgb(0_0_0/0.04)] md:p-6"
+          >
+            <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                <CardTitle className="text-base">{schema.originalName}</CardTitle>
-                <Badge variant="outline">{FILE_TYPE_LABELS[schema.fileType]}</Badge>
-                <Badge variant="secondary">{schema.rowCount.toLocaleString()} rows</Badge>
+                <h3 className="font-display text-base font-extrabold tracking-tight">
+                  {schema.originalName}
+                </h3>
+                <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
+                  {FILE_TYPE_LABELS[schema.fileType]}
+                </span>
+                <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                  {schema.rowCount.toLocaleString()} rows
+                </span>
               </div>
               {schema.missingRequired.length > 0 ? (
                 <p className="text-sm text-amber-700 dark:text-amber-200">
                   Missing required fields: {schema.missingRequired.join(", ")}
                 </p>
               ) : null}
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-border text-muted-foreground">
-                      <th className="py-2 pr-4 font-medium">Detected column</th>
-                      <th className="py-2 pr-4 font-medium">Type</th>
-                      <th className="py-2 pr-4 font-medium">Canonical field</th>
-                      <th className="py-2 font-medium">Match</th>
+            </div>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead>
+                  <tr className="border-b border-border text-muted-foreground">
+                    <th className="py-2 pr-4 font-medium">Detected column</th>
+                    <th className="py-2 pr-4 font-medium">Type</th>
+                    <th className="py-2 pr-4 font-medium">Canonical field</th>
+                    <th className="py-2 font-medium">Match</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {schema.mappings.map((mapping) => (
+                    <tr
+                      key={`${schema.rawTable}-${mapping.sourceColumn}`}
+                      className="border-b border-border/60"
+                    >
+                      <td className="py-2 pr-4 font-mono text-xs">
+                        {mapping.sourceColumn}
+                      </td>
+                      <td className="py-2 pr-4 text-muted-foreground">
+                        {
+                          schema.columns.find(
+                            (c) => c.column_name === mapping.sourceColumn,
+                          )?.column_type
+                        }
+                      </td>
+                      <td className="py-2 pr-4">
+                        {mapping.canonical ?? (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </td>
+                      <td className="py-2">
+                        <Badge variant={confidenceVariant(mapping.confidence)}>
+                          {mapping.confidence}
+                        </Badge>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {schema.mappings.map((mapping) => (
-                      <tr
-                        key={`${schema.rawTable}-${mapping.sourceColumn}`}
-                        className="border-b border-border/60"
-                      >
-                        <td className="py-2 pr-4 font-mono text-xs">
-                          {mapping.sourceColumn}
-                        </td>
-                        <td className="py-2 pr-4 text-muted-foreground">
-                          {
-                            schema.columns.find(
-                              (c) => c.column_name === mapping.sourceColumn,
-                            )?.column_type
-                          }
-                        </td>
-                        <td className="py-2 pr-4">
-                          {mapping.canonical ?? (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="py-2">
-                          <Badge variant={confidenceVariant(mapping.confidence)}>
-                            {mapping.confidence}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ))}
       </div>
     </details>
