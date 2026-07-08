@@ -108,3 +108,41 @@ body {
 .link-underline:hover {
   text-decoration-thickness: 2.5px;
 }
+
+/* Rolling currency symbol in the features headline (LandingPage CurrencyCycler).
+   Fixed-width slot so the surrounding words don't shift as glyph widths change. */
+.currency-slot {
+  position: relative;
+  display: inline-block;
+  width: 0.72em;
+  text-align: center;
+}
+.currency-slot .currency-in {
+  display: inline-block;
+  animation: currency-in 280ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.currency-slot .currency-out {
+  position: absolute;
+  inset: 0;
+  animation: currency-out 280ms cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+}
+@keyframes currency-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+}
+@keyframes currency-out {
+  to {
+    opacity: 0;
+    transform: translateY(-0.45em);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .currency-slot .currency-in {
+    animation: none;
+  }
+  .currency-slot .currency-out {
+    display: none;
+  }
+}

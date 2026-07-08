@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, BarChart3, BookOpen, ShoppingCart, Upload } from "lucide-react";
 import { FlowStepsVisual } from "@/components/landing/LandingVisuals";
 import { LandingFaq } from "@/components/landing/LandingFaq";
@@ -91,6 +91,57 @@ function Eyebrow({ label, light = false }: { label: string; light?: boolean }) {
       />
       {label}
     </p>
+  );
+}
+
+const CURRENCY_SYMBOLS = ["₹", "$", "£", "€", "¥"];
+
+function CurrencyCycler() {
+  const [roll, setRoll] = useState({ index: 0, prev: -1 });
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const IDLE_SWAP_MS = 1600;
+    const SCROLL_STEP_PX = 120;
+    const MIN_SWAP_MS = 120;
+    let lastSwap = performance.now();
+    let lastY = window.scrollY;
+    let travelled = 0;
+
+    const advance = () => {
+      lastSwap = performance.now();
+      setRoll((r) => ({ index: (r.index + 1) % CURRENCY_SYMBOLS.length, prev: r.index }));
+    };
+    const timer = window.setInterval(() => {
+      if (performance.now() - lastSwap >= IDLE_SWAP_MS) advance();
+    }, 200);
+    const onScroll = () => {
+      travelled += Math.abs(window.scrollY - lastY);
+      lastY = window.scrollY;
+      if (travelled >= SCROLL_STEP_PX && performance.now() - lastSwap >= MIN_SWAP_MS) {
+        travelled = 0;
+        advance();
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  return (
+    <span className="currency-slot" aria-hidden="true">
+      <span key={roll.index} className={roll.prev >= 0 ? "currency-in" : undefined}>
+        {CURRENCY_SYMBOLS[roll.index]}
+      </span>
+      {roll.prev >= 0 && (
+        <span key={`out-${roll.prev}`} className="currency-out">
+          {CURRENCY_SYMBOLS[roll.prev]}
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -530,7 +581,8 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             id="features-heading"
             className="max-w-3xl font-display text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl"
           >
-            Every Rupee, Every Refund, Every Read.
+            Every <CurrencyCycler />
+            <span className="sr-only">Rupee</span>, Every Refund, Every Read.
           </h2>
         </div>
 
