@@ -1,5 +1,5 @@
-import { Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
+import { Mascot } from "@/components/brand/Mascot";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -50,9 +50,14 @@ export function FileDropzone({ disabled, onFilesSelected }: FileDropzoneProps) {
       }}
     >
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4">
-        <div className="rounded-full bg-accent p-3 text-accent-foreground">
-          <Upload className="size-6" />
-        </div>
+        <Mascot
+          size="xl"
+          decorative
+          className={cn(
+            "border-primary/20 shadow-md transition-transform",
+            isDragging && "scale-105 border-primary/40",
+          )}
+        />
         <div className="flex flex-col gap-2">
           <p className="text-lg font-medium">Drop your Amazon export CSVs here</p>
           <p className="text-sm text-muted-foreground">

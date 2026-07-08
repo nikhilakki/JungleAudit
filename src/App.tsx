@@ -1,5 +1,6 @@
 import { Lock, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Mascot } from "@/components/brand/Mascot";
 import { BorrowingCharts } from "@/components/dashboard/BorrowingCharts";
 import { DataCoveragePanel } from "@/components/dashboard/DataCoveragePanel";
 import { DateRangeFilter } from "@/components/dashboard/DateRangeFilter";
@@ -159,26 +160,29 @@ export default function App() {
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-6xl flex-col gap-8 px-4 py-10 md:px-8">
-      <header className="flex flex-col gap-3">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
-          JungleAudit
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-          Your Amazon spending, analyzed locally
-        </h1>
-        <p className="max-w-2xl text-muted-foreground">
-          Drop your Amazon &quot;Request My Data&quot; export. Analysis runs entirely in
-          your browser.
-        </p>
-        <Alert className="flex items-start gap-3">
-          <Lock className="mt-0.5 size-4 shrink-0 text-primary" />
-          <div className="flex flex-col gap-1">
-            <AlertTitle>Privacy-first</AlertTitle>
-            <AlertDescription>
-              Your data never leaves this device. No uploads, no accounts, no server.
-            </AlertDescription>
-          </div>
-        </Alert>
+      <header className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-5">
+        <Mascot size="lg" className="sm:mt-1" />
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
+            JungleAudit
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            Your Amazon spending, analyzed locally
+          </h1>
+          <p className="max-w-2xl text-muted-foreground">
+            Drop your Amazon &quot;Request My Data&quot; export. Analysis runs entirely in
+            your browser.
+          </p>
+          <Alert className="flex items-start gap-3">
+            <Lock className="mt-0.5 size-4 shrink-0 text-primary" />
+            <div className="flex flex-col gap-1">
+              <AlertTitle>Privacy-first</AlertTitle>
+              <AlertDescription>
+                Your data never leaves this device. No uploads, no accounts, no server.
+              </AlertDescription>
+            </div>
+          </Alert>
+        </div>
       </header>
 
       <FileDropzone
@@ -195,11 +199,16 @@ export default function App() {
       />
 
       {isBusy ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          {status === "initializing"
-            ? "Starting analysis engine..."
-            : "Importing files and inspecting schema..."}
+        <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+          <div className="relative shrink-0">
+            <Mascot size="sm" decorative className="opacity-80" />
+            <Loader2 className="absolute -bottom-1 -right-1 size-4 animate-spin rounded-full bg-card text-primary" />
+          </div>
+          <p>
+            {status === "initializing"
+              ? "Starting analysis engine..."
+              : "Importing files and inspecting schema..."}
+          </p>
         </div>
       ) : null}
 
@@ -209,9 +218,6 @@ export default function App() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : null}
-
-      {schemas.length > 0 ? <DataCoveragePanel schemas={schemas} /> : null}
-      {schemas.length > 0 ? <SchemaPreview schemas={schemas} /> : null}
 
       {status === "ready" && !hasOrderData ? (
         <Alert>
@@ -233,6 +239,8 @@ export default function App() {
 
       {summary && currency ? (
         <section className="flex flex-col gap-6">
+          {schemas.length > 0 ? <DataCoveragePanel schemas={schemas} /> : null}
+
           <Card>
             <CardHeader>
               <CardTitle>Date range</CardTitle>
@@ -340,7 +348,11 @@ export default function App() {
             </Card>
           ) : null}
         </section>
+      ) : schemas.length > 0 ? (
+        <DataCoveragePanel schemas={schemas} />
       ) : null}
+
+      {schemas.length > 0 ? <SchemaPreview schemas={schemas} /> : null}
     </div>
   );
 }
