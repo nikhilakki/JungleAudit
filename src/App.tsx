@@ -1,15 +1,24 @@
 import { Lock, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { MonthlyTrendChart } from "@/components/dashboard/MonthlyTrendChart";
+import { DateRangeFilter } from "@/components/dashboard/DateRangeFilter";
 import { SpendSummary } from "@/components/dashboard/SpendSummary";
+import { SpendTrendChart } from "@/components/dashboard/SpendTrendChart";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileDropzone } from "@/components/upload/FileDropzone";
 import { SchemaPreview } from "@/components/upload/SchemaPreview";
 import {
-  fetchMonthlyTrend,
+  DEFAULT_DATE_FILTER,
+  dateFilterFromDataBounds,
+  listYearOptions,
+  resolveDateFilter,
+  type DateFilterState,
+} from "@/lib/analytics/date-filter";
+import {
+  fetchDataBounds,
   fetchSpendSummary,
-  type MonthlySpend,
+  fetchSpendTrend,
+  type PeriodSpend,
   type SpendSummary as SpendSummaryData,
 } from "@/lib/analytics/spend-trends";
 import { detectCurrency, type CurrencyInfo } from "@/lib/currency";
@@ -18,20 +27,30 @@ import { useDuckDB } from "@/hooks/useDuckDB";
 export default function App() {
   const { status, error, schemas, hasOrderData, uploadFiles } = useDuckDB();
   const [summary, setSummary] = useState<SpendSummaryData | null>(null);
-  const [monthlyTrend, setMonthlyTrend] = useState<MonthlySpend[]>([]);
+  const [trend, setTrend] = useState<PeriodSpend[]>([]);
   const [currency, setCurrency] = useState<CurrencyInfo | null>(null);
   const [analyticsError, setAnalyticsError] = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<DateFilterState>(DEFAULT_DATE_FILTER);
+  const [yearOptions, setYearOptions] = useState<number[]>([]);
+  const [resolvedFilterLabel, setResolvedFilterLabel] = useState("All time");
 
-  const loadAnalytics = useCallback(async () => {
+  const loadAnalytics = useCallback(async (filterState: DateFilterState) => {
     setAnalyticsError(null);
     try {
-      const [spendSummary, trend, currencyInfo] = await Promise.all([
-        fetchSpendSummary(),
-        fetchMonthlyTrend(),
+      const bounds = await fetchDataBounds();
+      const resolved = resolveDateFilter(filterState);
+      setResolvedFilterLabel(resolved.label);
+      setYearOptions(
+        listYearOptions({ min: bounds.min_date, max: bounds.max_date }),
+      );
+
+      const [spendSummary, trendData, currencyInfo] = await Promise.all([
+        fetchSpendSummary(resolved),
+        fetchSpendTrend(resolved),
         detectCurrency(),
       ]);
       setSummary(spendSummary);
-      setMonthlyTrend(trend);
+      setTrend(trendData);
       setCurrency(currencyInfo);
     } catch (err) {
       setAnalyticsError(err instanceof Error ? err.message : String(err));
@@ -40,9 +59,28 @@ export default function App() {
 
   useEffect(() => {
     if (status === "ready" && hasOrderData) {
-      void loadAnalytics();
+      void (async () => {
+        const bounds = await fetchDataBounds();
+        const seeded = {
+          ...DEFAULT_DATE_FILTER,
+          ...dateFilterFromDataBounds({
+            min: bounds.min_date,
+            max: bounds.max_date,
+          }),
+        };
+        setDateFilter(seeded);
+        await loadAnalytics(seeded);
+      })();
     }
   }, [status, hasOrderData, loadAnalytics]);
+
+  const handleDateFilterChange = useCallback(
+    (next: DateFilterState) => {
+      setDateFilter(next);
+      void loadAnalytics(next);
+    },
+    [loadAnalytics],
+  );
 
   const isBusy = status === "initializing" || status === "ingesting";
 
@@ -74,8 +112,9 @@ export default function App() {
         disabled={isBusy}
         onFilesSelected={async (files) => {
           setSummary(null);
-          setMonthlyTrend([]);
+          setTrend([]);
           setCurrency(null);
+          setDateFilter(DEFAULT_DATE_FILTER);
           await uploadFiles(files);
         }}
       />
@@ -117,13 +156,32 @@ export default function App() {
 
       {summary && currency ? (
         <section className="flex flex-col gap-6">
-          <SpendSummary summary={summary} currency={currency} />
           <Card>
             <CardHeader>
-              <CardTitle>Monthly spend trend</CardTitle>
+              <CardTitle>Date range</CardTitle>
             </CardHeader>
             <CardContent>
-              <MonthlyTrendChart data={monthlyTrend} currencyCode={currency.code} />
+              <DateRangeFilter
+                value={dateFilter}
+                yearOptions={yearOptions}
+                onChange={handleDateFilterChange}
+              />
+            </CardContent>
+          </Card>
+
+          <SpendSummary summary={summary} currency={currency} />
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <CardTitle>Spend trend</CardTitle>
+              <p className="text-sm text-muted-foreground">{resolvedFilterLabel}</p>
+            </CardHeader>
+            <CardContent>
+              <SpendTrendChart
+                data={trend}
+                currencyCode={currency.code}
+                granularity={resolveDateFilter(dateFilter).granularity}
+              />
             </CardContent>
           </Card>
         </section>

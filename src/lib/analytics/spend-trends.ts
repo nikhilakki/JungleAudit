@@ -1,3 +1,5 @@
+import type { ResolvedDateFilter } from "@/lib/analytics/date-filter";
+import { buildDateSqlClause } from "@/lib/analytics/date-filter";
 import { runQuery } from "@/lib/duckdb";
 
 export interface SpendSummary {
@@ -8,8 +10,8 @@ export interface SpendSummary {
   skipped_rows: number;
 }
 
-export interface MonthlySpend {
-  month: string;
+export interface PeriodSpend {
+  period: string;
   spend: number;
 }
 
@@ -19,7 +21,32 @@ const ACTIVE_ORDER_FILTER = `
   AND (order_status IS NULL OR lower(order_status) NOT LIKE '%cancel%')
 `;
 
-export async function fetchSpendSummary(): Promise<SpendSummary> {
+export async function fetchDataBounds(): Promise<{
+  min_date: string | null;
+  max_date: string | null;
+}> {
+  const rows = await runQuery<{
+    min_date: string | null;
+    max_date: string | null;
+  }>(`
+    SELECT
+      CAST(MIN(order_date) AS VARCHAR) AS min_date,
+      CAST(MAX(order_date) AS VARCHAR) AS max_date
+    FROM canonical_all_orders
+    WHERE ${ACTIVE_ORDER_FILTER}
+  `);
+
+  return {
+    min_date: rows[0]?.min_date ?? null,
+    max_date: rows[0]?.max_date ?? null,
+  };
+}
+
+export async function fetchSpendSummary(
+  filter: ResolvedDateFilter,
+): Promise<SpendSummary> {
+  const dateClause = buildDateSqlClause(filter);
+
   const rows = await runQuery<{
     total_spend: number | null;
     order_count: number | null;
@@ -29,6 +56,7 @@ export async function fetchSpendSummary(): Promise<SpendSummary> {
   }>(`
     WITH base AS (
       SELECT * FROM canonical_all_orders
+      WHERE TRUE${dateClause}
     ),
     valid AS (
       SELECT * FROM base WHERE ${ACTIVE_ORDER_FILTER}
@@ -57,22 +85,27 @@ export async function fetchSpendSummary(): Promise<SpendSummary> {
   };
 }
 
-export async function fetchMonthlyTrend(): Promise<MonthlySpend[]> {
+export async function fetchSpendTrend(
+  filter: ResolvedDateFilter,
+): Promise<PeriodSpend[]> {
+  const dateClause = buildDateSqlClause(filter);
+  const trunc = filter.granularity;
+
   const rows = await runQuery<{
-    month: string;
+    period: string;
     spend: number | null;
   }>(`
     SELECT
-      CAST(DATE_TRUNC('month', order_date) AS VARCHAR) AS month,
+      CAST(DATE_TRUNC('${trunc}', order_date) AS VARCHAR) AS period,
       SUM(COALESCE(price, 0) * COALESCE(quantity, 1)) AS spend
     FROM canonical_all_orders
-    WHERE ${ACTIVE_ORDER_FILTER}
+    WHERE ${ACTIVE_ORDER_FILTER}${dateClause}
     GROUP BY 1
     ORDER BY 1
   `);
 
   return rows.map((row) => ({
-    month: row.month,
+    period: row.period,
     spend: row.spend ?? 0,
   }));
 }
