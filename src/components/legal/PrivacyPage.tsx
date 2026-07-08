@@ -29,8 +29,20 @@ export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
       </p>
       <p>
         After the app is loaded, analyzing your CSVs does not require sending file
-        contents to JungleAudit or any third-party analytics endpoint operated by this
-        project.
+        contents to JungleAudit servers. Your order data is not included in any analytics
+        events.
+      </p>
+
+      <h2 className="text-base font-semibold">Optional usage analytics</h2>
+      <p>
+        The hosted site may use Google Analytics 4 (GA4) to measure aggregate traffic —
+        for example page views and button clicks. GA4 loads only after you acknowledge the
+        privacy disclaimer at the start of a session. It does not receive your CSV files,
+        order details, or analysis results.
+      </p>
+      <p>
+        If you prefer to avoid analytics entirely, use a browser content blocker, or run
+        JungleAudit locally from the source repository without configuring a measurement ID.
       </p>
 
       <h2 className="text-base font-semibold">Verify it yourself (optional)</h2>
@@ -50,11 +62,11 @@ export function PrivacyPage({ onNavigate }: PrivacyPageProps) {
 
       <h2 className="text-base font-semibold">Third-party hosting</h2>
       <p>
-        If you access JungleAudit through a hosting provider (for example Vercel or
-        GitHub Pages), that provider may log standard web server metadata such as IP
-        address, user agent, and requested URLs for the static files. That logging is
-        separate from your CSV analysis and does not include the contents of files you
-        process locally.
+        If you access JungleAudit through a hosting provider (for example Cloudflare
+        Pages, Vercel, or GitHub Pages), that provider may log standard web server
+        metadata such as IP address, user agent, and requested URLs for the static files.
+        That logging is separate from your CSV analysis and does not include the contents
+        of files you process locally.
       </p>
 
       <h2 className="text-base font-semibold">Contact</h2>

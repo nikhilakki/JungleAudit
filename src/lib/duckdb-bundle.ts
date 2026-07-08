@@ -1,17 +1,25 @@
 import type { DuckDBBundles } from "@duckdb/duckdb-wasm";
-import duckdb_wasm_eh from "@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url";
-import eh_worker from "@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url";
-import duckdb_wasm_mvp from "@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url";
-import mvp_worker from "@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url";
 
-/** Same-origin bundles — avoids jsdelivr cross-origin Worker errors on localhost. */
-export const MANUAL_DUCKDB_BUNDLES: DuckDBBundles = {
-  mvp: {
-    mainModule: duckdb_wasm_mvp,
-    mainWorker: mvp_worker,
-  },
-  eh: {
-    mainModule: duckdb_wasm_eh,
-    mainWorker: eh_worker,
-  },
-};
+const R2_ASSET_BASE = import.meta.env.VITE_DUCKDB_ASSET_BASE?.replace(/\/$/, "");
+
+function r2Bundles(base: string): DuckDBBundles {
+  return {
+    mvp: {
+      mainModule: `${base}/duckdb/duckdb-mvp.wasm`,
+      mainWorker: `${base}/duckdb/duckdb-browser-mvp.worker.js`,
+    },
+    eh: {
+      mainModule: `${base}/duckdb/duckdb-eh.wasm`,
+      mainWorker: `${base}/duckdb/duckdb-browser-eh.worker.js`,
+    },
+  };
+}
+
+/** Local same-origin bundles in dev; R2 CDN in production (Cloudflare Pages 25 MiB limit). */
+export async function loadManualDuckDBBundles(): Promise<DuckDBBundles> {
+  if (R2_ASSET_BASE) {
+    return r2Bundles(R2_ASSET_BASE);
+  }
+  const { LOCAL_DUCKDB_BUNDLES } = await import("./duckdb-bundle.local");
+  return LOCAL_DUCKDB_BUNDLES;
+}

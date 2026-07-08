@@ -5,9 +5,73 @@
     <link rel="icon" type="image/png" href="/jungleaudit-mascot.png" />
     <link rel="apple-touch-icon" href="/jungleaudit-mascot.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JungleAudit</title>
+    <title>JungleAudit — Understand your Amazon spending, privately</title>
+    <meta
+      name="description"
+      content="Upload your Amazon Request My Data export and explore spend trends, refunds, and payment breakdowns entirely in your browser. No account, no server upload."
+    />
+    <meta
+      name="keywords"
+      content="Amazon spend analyzer, Amazon order history, Request My Data, personal finance, local-first analytics, privacy, CSV analyzer"
+    />
+    <meta name="author" content="Nikhil Akki" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://jungleaudit.org/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="JungleAudit" />
+    <meta
+      property="og:title"
+      content="JungleAudit — Understand your Amazon spending, privately"
+    />
+    <meta
+      property="og:description"
+      content="Local-first Amazon spend analyzer. Upload your export, get charts in seconds. Your CSVs never leave your device."
+    />
+    <meta property="og:image" content="https://jungleaudit.org/landing-hero.jpg" />
+    <meta property="og:url" content="https://jungleaudit.org/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="JungleAudit — Understand your Amazon spending, privately"
+    />
+    <meta
+      name="twitter:description"
+      content="Local-first Amazon spend analyzer. Upload your export, get charts in seconds. Your CSVs never leave your device."
+    />
+    <meta name="twitter:image" content="https://jungleaudit.org/landing-hero.jpg" />
+    <meta name="theme-color" content="#2d6a4f" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "JungleAudit",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web browser",
+        "description": "Local-first Amazon spend analyzer that runs entirely in your browser. Upload your Request My Data export for spend trends, refunds, and payment insights without sending files to a server.",
+        "url": "https://jungleaudit.org/",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Nikhil Akki", "url": "https://x.com/nik_akki" }
+      }
+    </script>
   </head>
   <body>
+    <noscript>
+      <article style="max-width: 42rem; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>JungleAudit — Amazon spend analyzer (local &amp; private)</h1>
+        <p>
+          JungleAudit analyzes your Amazon <strong>Request My Data</strong> export in your browser.
+          Your order CSV files are never uploaded to a server. Explore spend trends, payment
+          breakdowns, refunds, and Kindle borrowing insights.
+        </p>
+        <h2>How it works</h2>
+        <ol>
+          <li>Request your Amazon data from your marketplace account.</li>
+          <li>Download and unzip the export when Amazon emails you.</li>
+          <li>Open JungleAudit with JavaScript enabled and upload your CSVs.</li>
+        </ol>
+        <p><a href="#/app">Open the analyzer</a> · <a href="#/privacy">Privacy policy</a></p>
+      </article>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -1,5 +1,5 @@
 import * as duckdb from "@duckdb/duckdb-wasm";
-import { MANUAL_DUCKDB_BUNDLES } from "@/lib/duckdb-bundle";
+import { loadManualDuckDBBundles } from "@/lib/duckdb-bundle";
 import type { WorkerRequest, WorkerResponse } from "@/lib/duckdb-types";
 import {
   buildAllOrdersViewSql,
@@ -38,7 +38,8 @@ function toPlainRow(row: unknown): Record<string, unknown> {
 async function ensureDb(): Promise<duckdb.AsyncDuckDBConnection> {
   if (conn) return conn;
 
-  const bundle = await duckdb.selectBundle(MANUAL_DUCKDB_BUNDLES);
+  const manualBundles = await loadManualDuckDBBundles();
+  const bundle = await duckdb.selectBundle(manualBundles);
   const worker = new Worker(bundle.mainWorker!);
   const logger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING);
   db = new duckdb.AsyncDuckDB(logger, worker);
