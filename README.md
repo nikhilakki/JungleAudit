@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/jungleaudit-mascot.png" alt="JungleAudit mascot" width="140" />
+<img src="public/jungleaudit-mascot.webp" alt="JungleAudit mascot" width="140" />
 
 # JungleAudit
 

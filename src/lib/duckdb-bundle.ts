@@ -2,15 +2,21 @@ import type { DuckDBBundles } from "@duckdb/duckdb-wasm";
 
 const R2_ASSET_BASE = import.meta.env.VITE_DUCKDB_ASSET_BASE?.replace(/\/$/, "");
 
+/** Worker scripts must be same-origin — browsers block `new Worker(crossOriginUrl)` even with CORS. */
+const SAME_ORIGIN_WORKERS = {
+  mvp: "/duckdb/duckdb-browser-mvp.worker.js",
+  eh: "/duckdb/duckdb-browser-eh.worker.js",
+} as const;
+
 function r2Bundles(base: string): DuckDBBundles {
   return {
     mvp: {
       mainModule: `${base}/duckdb/duckdb-mvp.wasm`,
-      mainWorker: `${base}/duckdb/duckdb-browser-mvp.worker.js`,
+      mainWorker: SAME_ORIGIN_WORKERS.mvp,
     },
     eh: {
       mainModule: `${base}/duckdb/duckdb-eh.wasm`,
-      mainWorker: `${base}/duckdb/duckdb-browser-eh.worker.js`,
+      mainWorker: SAME_ORIGIN_WORKERS.eh,
     },
   };
 }

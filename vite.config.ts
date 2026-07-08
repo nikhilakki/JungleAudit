@@ -4,6 +4,11 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
+const DUCKDB_WORKER_FILES = [
+  "duckdb-browser-eh.worker.js",
+  "duckdb-browser-mvp.worker.js",
+] as const;
+
 function stripLocalDuckdbAssetsPlugin(useR2Assets: boolean): Plugin {
   return {
     name: "strip-local-duckdb-assets",
@@ -22,6 +27,26 @@ function stripLocalDuckdbAssetsPlugin(useR2Assets: boolean): Plugin {
         ) {
           fs.unlinkSync(path.join(assetsDir, file));
         }
+      }
+    },
+  };
+}
+
+/** Copy DuckDB worker scripts to dist/duckdb/ — WASM stays on R2, workers must be same-origin. */
+function copyDuckdbWorkersPlugin(useR2Assets: boolean): Plugin {
+  return {
+    name: "copy-duckdb-workers",
+    closeBundle() {
+      if (!useR2Assets) return;
+
+      const srcDir = path.resolve(
+        "node_modules/@duckdb/duckdb-wasm/dist",
+      );
+      const destDir = path.resolve("dist/duckdb");
+      fs.mkdirSync(destDir, { recursive: true });
+
+      for (const file of DUCKDB_WORKER_FILES) {
+        fs.copyFileSync(path.join(srcDir, file), path.join(destDir, file));
       }
     },
   };
@@ -67,6 +92,7 @@ export default defineConfig({
     tailwindcss(),
     seoSitemapPlugin(siteUrl),
     stripLocalDuckdbAssetsPlugin(useR2Assets),
+    copyDuckdbWorkersPlugin(useR2Assets),
   ],
   assetsInclude: ["**/*.wasm"],
   optimizeDeps: {
@@ -79,5 +105,23 @@ export default defineConfig({
   },
   worker: {
     format: "es",
+  },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "charts",
+              test: /node_modules[\\/](chart\.js|react-chartjs-2|chartjs-plugin-zoom)/,
+            },
+            {
+              name: "duckdb",
+              test: /node_modules[\\/]@duckdb[\\/]|duckdb-bundle/,
+            },
+          ],
+        },
+      },
+    },
   },
 });

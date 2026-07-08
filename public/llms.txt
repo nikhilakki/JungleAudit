@@ -10,34 +10,34 @@ JungleAudit is an open-source web application that uses DuckDB WASM in a browser
 - Analysis runs via DuckDB in a Web Worker; there is no backend ingestion of order files.
 - Insights include total spend, monthly trends, payment method breakdown, refunds/net spend, return reasons, and digital borrowing (Kindle Unlimited / library loans).
 - No sign-up or account is required.
-- Source code: https://github.com/nikhilakki/JungleAudit
+- Source code: [JungleAudit on GitHub](https://github.com/nikhilakki/JungleAudit)
 
 ## Key pages
 
-- Home / landing: /
-- Analyzer: /#/app
-- Privacy policy: /#/privacy
-- Terms of use: /#/terms
-- Disclaimer: /#/disclaimer
+- [Home / landing](https://jungleaudit.org/)
+- [Analyzer app](https://jungleaudit.org/#/app)
+- [Privacy policy](https://jungleaudit.org/#/privacy)
+- [Terms of use](https://jungleaudit.org/#/terms)
+- [Disclaimer](https://jungleaudit.org/#/disclaimer)
 
 ## How to use JungleAudit
 
-1. Request your Amazon personal data (Order History, Digital Orders) from your country’s Amazon privacy portal.
+1. Request your Amazon personal data (Order History, Digital Orders) from your country's Amazon privacy portal.
 2. Download the ZIP when processing completes and unzip the CSV files.
-3. Open JungleAudit, accept the local-only privacy notice, and upload the files or folder.
+3. Open [JungleAudit](https://jungleaudit.org/), accept the local-only privacy notice, and upload the files or folder.
 4. Explore charts and summaries; optionally filter by date range.
 
 ## Privacy model
 
-- Order CSV contents stay on the user’s device during analysis.
+- Order CSV contents stay on the user's device during analysis.
 - The app may load static assets (HTML, JS, WASM) from the hosting origin.
 - Optional Google Analytics 4 may be enabled by the site operator for aggregate usage metrics only — it does not receive Amazon order data.
 
 ## Author
 
-Nikhil Akki — https://x.com/nik_akki
+Nikhil Akki — [X profile](https://x.com/nik_akki)
 
 ## Optional
 
-- GitHub repository: https://github.com/nikhilakki/JungleAudit
-- README with per-country Amazon data request links: https://github.com/nikhilakki/JungleAudit#request-your-amazon-data
+- [GitHub repository](https://github.com/nikhilakki/JungleAudit)
+- [README: per-country Amazon data request links](https://github.com/nikhilakki/JungleAudit#request-your-amazon-data)

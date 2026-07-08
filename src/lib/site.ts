@@ -12,7 +12,7 @@ export const SITE_DESCRIPTION =
 export const SITE_URL =
   import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ?? "https://jungleaudit.org";
 
-export const SITE_OG_IMAGE = `${SITE_URL}/landing-hero.jpg`;
+export const SITE_OG_IMAGE = `${SITE_URL}/landing-hero.webp`;
 
 export const SITE_KEYWORDS = [
   "Amazon spend analyzer",

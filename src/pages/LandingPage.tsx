@@ -22,7 +22,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { AppRoute } from "@/hooks/useHashRoute";
 import { trackEvent } from "@/lib/analytics/ga4";
 
-const HERO_IMAGE = "/landing-hero.jpg";
+const HERO_WIDTH = 1248;
+const HERO_HEIGHT = 832;
 
 const FEATURES = [
   {
@@ -73,7 +74,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         <div className="relative grid items-center gap-10 lg:grid-cols-2">
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-3">
-              <Mascot size="md" />
+              <Mascot size="md" priority />
               <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">
                 JungleAudit
               </p>
@@ -126,8 +127,14 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
 
           <div className="relative">
             <img
-              src={HERO_IMAGE}
+              src="/landing-hero.webp"
+              srcSet="/landing-hero-640.webp 640w, /landing-hero-960.webp 960w, /landing-hero.webp 1248w"
+              sizes="(min-width: 1024px) 50vw, 100vw"
               alt="JungleAudit explorer mascot reviewing Amazon spend charts on a laptop"
+              width={HERO_WIDTH}
+              height={HERO_HEIGHT}
+              decoding="async"
+              fetchPriority="high"
               className="w-full rounded-xl border border-border/80 object-cover shadow-lg"
             />
             <Card className="absolute -bottom-4 -left-2 max-w-[220px] border-primary/20 bg-card/95 shadow-md backdrop-blur-sm md:-left-6">
