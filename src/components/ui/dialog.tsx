@@ -1,6 +1,21 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+type DialogContextValue = {
+  titleId: string;
+  descriptionId: string;
+};
+
+const DialogContext = React.createContext<DialogContextValue | null>(null);
+
+function useDialogContext() {
+  const ctx = React.useContext(DialogContext);
+  if (!ctx) {
+    throw new Error("Dialog compound components must be used within <Dialog>");
+  }
+  return ctx;
+}
+
 type DialogProps = {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -14,6 +29,9 @@ export function Dialog({
   dismissible = true,
   children,
 }: DialogProps) {
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+
   React.useEffect(() => {
     if (!open || !dismissible) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -31,20 +49,24 @@ export function Dialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
-        aria-hidden="true"
-        onClick={dismissible ? () => onOpenChange?.(false) : undefined}
-      />
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="relative z-10 flex max-h-[min(90svh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg"
-      >
-        {children}
+    <DialogContext.Provider value={{ titleId, descriptionId }}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+          className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+          aria-hidden="true"
+          onClick={dismissible ? () => onOpenChange?.(false) : undefined}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
+          className="relative z-10 flex max-h-[min(90svh,720px)] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg"
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </DialogContext.Provider>
   );
 }
 
@@ -64,8 +86,10 @@ export function DialogTitle({
   className,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const { titleId } = useDialogContext();
   return (
     <h2
+      id={titleId}
       className={cn("text-lg font-semibold leading-none tracking-tight", className)}
       {...props}
     />
@@ -76,8 +100,13 @@ export function DialogDescription({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+  const { descriptionId } = useDialogContext();
   return (
-    <div className={cn("text-sm text-muted-foreground", className)} {...props} />
+    <div
+      id={descriptionId}
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
   );
 }
 
