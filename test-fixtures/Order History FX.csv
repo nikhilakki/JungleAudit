@@ -1,0 +1,3 @@
+Order ID,Order Date,ASIN,Product Name,Quantity,FX Transaction Amount,Order Status,Payment Method
+123-4567890-1234567,2024-01-15,B00TEST001,USB-C Cable 2m,1,₹499.00,Shipped,Visa ending in 4242
+123-4567890-1234568,2024-02-20,B00TEST002,Notebook Pack of 3,2,$12.50,Shipped,Visa ending in 4242

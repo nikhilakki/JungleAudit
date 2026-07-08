@@ -1,0 +1,5 @@
+Order ID,Order Date,ASIN,Product Name,Quantity,Price,Order Status,Payment Method
+123-4567890-1234567,2024-01-15,B00TEST001,USB-C Cable 2m,1,₹499.00,Shipped,Visa ending in 4242
+123-4567890-1234568,2024-02-20,B00TEST002,Notebook Pack of 3,2,₹250.00,Shipped,Visa ending in 4242
+123-4567890-1234569,2024-03-10,B00TEST003,Wireless Mouse,1,₹1299.00,Cancelled,Visa ending in 4242
+123-4567890-1234570,2024-03-25,B00TEST004,Desk Lamp,1,₹899.00,Shipped,Visa ending in 4242

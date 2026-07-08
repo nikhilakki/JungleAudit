@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-destructive: var(--destructive);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.002 106);
+  --foreground: oklch(0.2 0.02 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 260);
+  --muted: oklch(0.96 0.005 106);
+  --muted-foreground: oklch(0.5 0.02 260);
+  --border: oklch(0.9 0.01 106);
+  --primary: oklch(0.45 0.14 145);
+  --primary-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.55 0.2 25);
+  --accent: oklch(0.94 0.03 145);
+  --accent-foreground: oklch(0.3 0.08 145);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.16 0.02 260);
+    --foreground: oklch(0.95 0.01 106);
+    --card: oklch(0.2 0.02 260);
+    --card-foreground: oklch(0.95 0.01 106);
+    --muted: oklch(0.25 0.02 260);
+    --muted-foreground: oklch(0.65 0.02 260);
+    --border: oklch(0.3 0.02 260);
+    --primary: oklch(0.65 0.14 145);
+    --primary-foreground: oklch(0.15 0.02 260);
+    --destructive: oklch(0.6 0.2 25);
+    --accent: oklch(0.28 0.04 145);
+    --accent-foreground: oklch(0.9 0.03 145);
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+#root {
+  min-height: 100svh;
+}
