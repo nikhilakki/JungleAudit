@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { type AppRoute, useHashRoute } from "@/hooks/useHashRoute";
 import { useSiteHead } from "@/hooks/useSiteHead";
-import { trackEvent } from "@/lib/analytics/ga4";
+
 import {
   isDisclaimerSnoozed,
   snoozeDisclaimerForWeek,
@@ -70,12 +70,12 @@ export default function App() {
       <PrivacyDisclaimerModal
         open={disclaimerOpen}
         onAccept={() => {
-          trackEvent("disclaimer_accepted");
+          sessionStorage.setItem("ja_ga_disclaimer", "accepted");
           setDisclaimerOpen(false);
         }}
         onSnoozeForWeek={() => {
           snoozeDisclaimerForWeek();
-          trackEvent("disclaimer_snoozed");
+          sessionStorage.setItem("ja_ga_disclaimer", "snoozed");
           setDisclaimerOpen(false);
         }}
         onNavigate={handleNavigate}

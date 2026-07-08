@@ -16,11 +16,13 @@ export function isGa4Configured(): boolean {
 
 function ensureDataLayer(): void {
   window.dataLayer = window.dataLayer ?? [];
-  window.gtag =
-    window.gtag ??
-    function gtag(...args: unknown[]) {
-      window.dataLayer?.push(args);
-    };
+  if (window.gtag) return;
+
+  // Must use `arguments` (not a rest array): gtag.js hooks dataLayer.push and
+  // reads push()'s call Arguments, one command group per gtag() invocation.
+  window.gtag = function gtag() {
+    window.dataLayer!.push(arguments);
+  };
 }
 
 function loadGtagScript(): Promise<void> {
