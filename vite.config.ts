@@ -53,7 +53,9 @@ function copyDuckdbWorkersPlugin(useR2Assets: boolean): Plugin {
 }
 
 function seoSitemapPlugin(siteUrl: string): Plugin {
-  const routes = ["/", "/#/privacy", "/#/terms", "/#/disclaimer"];
+  // Hash routes (/#/privacy) are invalid in sitemaps — crawlers strip fragments,
+  // so every hash URL deduplicates to "/". Only real paths belong here.
+  const routes = ["/"];
 
   return {
     name: "seo-sitemap",
