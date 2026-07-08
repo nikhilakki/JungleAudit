@@ -1,12 +1,24 @@
 import { Lock, Loader2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { BorrowingCharts } from "@/components/dashboard/BorrowingCharts";
+import { DataCoveragePanel } from "@/components/dashboard/DataCoveragePanel";
 import { DateRangeFilter } from "@/components/dashboard/DateRangeFilter";
+import { NetSpendSummary } from "@/components/dashboard/NetSpendSummary";
+import { PaymentBreakdownChart } from "@/components/dashboard/PaymentBreakdownChart";
+import { RefundTrendChart } from "@/components/dashboard/RefundTrendChart";
+import { ReturnReasonsChart } from "@/components/dashboard/ReturnReasonsChart";
 import { SpendSummary } from "@/components/dashboard/SpendSummary";
 import { SpendTrendChart } from "@/components/dashboard/SpendTrendChart";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileDropzone } from "@/components/upload/FileDropzone";
 import { SchemaPreview } from "@/components/upload/SchemaPreview";
+import {
+  fetchBorrowingByType,
+  fetchBorrowingSummary,
+  fetchBorrowingTrend,
+  type BorrowingSummary,
+} from "@/lib/analytics/borrowing";
 import {
   DEFAULT_DATE_FILTER,
   dateFilterFromDataBounds,
@@ -15,12 +27,26 @@ import {
   type DateFilterState,
 } from "@/lib/analytics/date-filter";
 import {
+  fetchPaymentBreakdown,
+  type PaymentBreakdownRow,
+} from "@/lib/analytics/payments";
+import {
+  fetchRefundSummary,
+  fetchRefundTrend,
+  fetchReplacementCount,
+  fetchReturnReasons,
+  type RefundSummary,
+  type RefundTrendPoint,
+  type ReturnReasonRow,
+} from "@/lib/analytics/returns";
+import {
   fetchDataBounds,
   fetchSpendSummary,
   fetchSpendTrend,
   type PeriodSpend,
   type SpendSummary as SpendSummaryData,
 } from "@/lib/analytics/spend-trends";
+import { getAvailableInsights } from "@/lib/data-insights";
 import { detectCurrency, type CurrencyInfo } from "@/lib/currency";
 import { useDuckDB } from "@/hooks/useDuckDB";
 
@@ -33,6 +59,24 @@ export default function App() {
   const [dateFilter, setDateFilter] = useState<DateFilterState>(DEFAULT_DATE_FILTER);
   const [yearOptions, setYearOptions] = useState<number[]>([]);
   const [resolvedFilterLabel, setResolvedFilterLabel] = useState("All time");
+
+  const [paymentBreakdown, setPaymentBreakdown] = useState<PaymentBreakdownRow[]>([]);
+  const [refundSummary, setRefundSummary] = useState<RefundSummary | null>(null);
+  const [refundTrend, setRefundTrend] = useState<RefundTrendPoint[]>([]);
+  const [returnReasons, setReturnReasons] = useState<ReturnReasonRow[]>([]);
+  const [replacementCount, setReplacementCount] = useState(0);
+  const [borrowingSummary, setBorrowingSummary] = useState<BorrowingSummary | null>(
+    null,
+  );
+  const [borrowingByType, setBorrowingByType] = useState<
+    Awaited<ReturnType<typeof fetchBorrowingByType>>
+  >([]);
+  const [borrowingTrend, setBorrowingTrend] = useState<
+    Awaited<ReturnType<typeof fetchBorrowingTrend>>
+  >([]);
+
+  const insights = useMemo(() => getAvailableInsights(schemas), [schemas]);
+  const insightIds = useMemo(() => new Set(insights.map((i) => i.id)), [insights]);
 
   const loadAnalytics = useCallback(async (filterState: DateFilterState) => {
     setAnalyticsError(null);
@@ -52,6 +96,35 @@ export default function App() {
       setSummary(spendSummary);
       setTrend(trendData);
       setCurrency(currencyInfo);
+
+      const [
+        payments,
+        refunds,
+        refundSeries,
+        reasons,
+        replacements,
+        borrowSummary,
+        borrowTypes,
+        borrowTrend,
+      ] = await Promise.all([
+        fetchPaymentBreakdown(resolved),
+        fetchRefundSummary(resolved, spendSummary.order_count),
+        fetchRefundTrend(resolved),
+        fetchReturnReasons(resolved),
+        fetchReplacementCount(),
+        fetchBorrowingSummary(),
+        fetchBorrowingByType(),
+        fetchBorrowingTrend(resolved),
+      ]);
+
+      setPaymentBreakdown(payments);
+      setRefundSummary(refunds);
+      setRefundTrend(refundSeries);
+      setReturnReasons(reasons);
+      setReplacementCount(replacements);
+      setBorrowingSummary(borrowSummary);
+      setBorrowingByType(borrowTypes);
+      setBorrowingTrend(borrowTrend);
     } catch (err) {
       setAnalyticsError(err instanceof Error ? err.message : String(err));
     }
@@ -114,6 +187,8 @@ export default function App() {
           setSummary(null);
           setTrend([]);
           setCurrency(null);
+          setPaymentBreakdown([]);
+          setRefundSummary(null);
           setDateFilter(DEFAULT_DATE_FILTER);
           await uploadFiles(files);
         }}
@@ -135,6 +210,7 @@ export default function App() {
         </Alert>
       ) : null}
 
+      {schemas.length > 0 ? <DataCoveragePanel schemas={schemas} /> : null}
       {schemas.length > 0 ? <SchemaPreview schemas={schemas} /> : null}
 
       {status === "ready" && !hasOrderData ? (
@@ -142,7 +218,8 @@ export default function App() {
           <AlertTitle>No order files detected</AlertTitle>
           <AlertDescription>
             Upload at least Order History.csv or Digital Content Orders.csv to see
-            spend metrics.
+            spend metrics. Returns, cart, and borrowing files add more insights when
+            included.
           </AlertDescription>
         </Alert>
       ) : null}
@@ -171,6 +248,15 @@ export default function App() {
 
           <SpendSummary summary={summary} currency={currency} />
 
+          {insightIds.has("refunds") ? (
+            <NetSpendSummary
+              grossSpend={summary.total_spend}
+              refundSummary={refundSummary}
+              currency={currency}
+              replacementCount={replacementCount}
+            />
+          ) : null}
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2">
               <CardTitle>Spend trend</CardTitle>
@@ -184,6 +270,75 @@ export default function App() {
               />
             </CardContent>
           </Card>
+
+          {insightIds.has("payments") && paymentBreakdown.length > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment methods</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PaymentBreakdownChart
+                  data={paymentBreakdown}
+                  currencyCode={currency.code}
+                />
+              </CardContent>
+            </Card>
+          ) : null}
+
+          {insightIds.has("refunds") ? (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Refund trend</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <RefundTrendChart
+                    data={refundTrend}
+                    currencyCode={currency.code}
+                    granularity={resolveDateFilter(dateFilter).granularity}
+                  />
+                </CardContent>
+              </Card>
+
+              {returnReasons.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Top return reasons</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ReturnReasonsChart
+                      data={returnReasons}
+                      currencyCode={currency.code}
+                    />
+                  </CardContent>
+                </Card>
+              ) : null}
+            </>
+          ) : null}
+
+          {insightIds.has("borrowing") && borrowingSummary ? (
+            <Card>
+              <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
+                <CardTitle>Digital borrowing</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  {borrowingSummary.total_borrows.toLocaleString()} total
+                  {borrowingSummary.active_borrows > 0
+                    ? ` · ${borrowingSummary.active_borrows} active`
+                    : ""}
+                  {borrowingSummary.top_program
+                    ? ` · ${borrowingSummary.top_program}`
+                    : ""}
+                </p>
+              </CardHeader>
+              <CardContent>
+                <BorrowingCharts
+                  byType={borrowingByType}
+                  trend={borrowingTrend}
+                  granularity={resolveDateFilter(dateFilter).granularity}
+                />
+              </CardContent>
+            </Card>
+          ) : null}
         </section>
       ) : null}
     </div>

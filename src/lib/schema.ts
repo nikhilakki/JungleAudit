@@ -7,6 +7,8 @@ export type AmazonFileType =
   | "refund_details"
   | "digital_returns"
   | "replacement_orders"
+  | "digital_borrowed_items"
+  | "orders_returns_v2"
   | "unknown";
 
 export type CanonicalField =
@@ -32,7 +34,9 @@ export type CanonicalField =
   | "gift_flag"
   | "original_order_id"
   | "replacement_order_id"
-  | "seller";
+  | "seller"
+  | "content_type"
+  | "loan_program";
 
 export type MappingConfidence = "exact" | "fuzzy" | "unmapped";
 
@@ -75,6 +79,8 @@ export const FILE_NAME_PATTERNS: Record<
   refund_details: [/^refund[\s_-]*details\.csv$/i],
   digital_returns: [/^digital[\s_-]*returns\.csv$/i],
   replacement_orders: [/^replacement[\s_-]*orders\.csv$/i],
+  digital_borrowed_items: [/^digital[\s_-]*borrowed[\s_-]*items\.csv$/i],
+  orders_returns_v2: [/^your[\s_.-]*orders[\s_.-]*returns.*\.csv$/i],
 };
 
 export const FILE_TYPE_LABELS: Record<AmazonFileType, string> = {
@@ -86,19 +92,22 @@ export const FILE_TYPE_LABELS: Record<AmazonFileType, string> = {
   refund_details: "Refund Details",
   digital_returns: "Digital Returns",
   replacement_orders: "Replacement Orders",
+  digital_borrowed_items: "Digital Borrowed Items",
+  orders_returns_v2: "Orders Returns (v2)",
   unknown: "Unknown",
 };
 
-const ORDER_CANONICAL_FIELDS: CanonicalField[] = [
-  "order_id",
-  "order_date",
-  "asin",
-  "product_title",
-  "quantity",
-  "price",
-  "currency",
-  "order_status",
-  "payment_method",
+export const ANALYTICS_FILE_TYPES: AmazonFileType[] = [
+  "order_history",
+  "digital_content_orders",
+  "cart_history",
+  "return_requests",
+  "returns_status",
+  "refund_details",
+  "digital_returns",
+  "replacement_orders",
+  "digital_borrowed_items",
+  "orders_returns_v2",
 ];
 
 export const REQUIRED_FIELDS_BY_TYPE: Partial<
@@ -123,11 +132,13 @@ export const FIELD_ALIASES: Record<
       "product title",
       "item description",
     ],
-    quantity: ["quantity", "qty", "units"],
+    quantity: ["quantity", "qty", "units", "original quantity"],
     price: [
+      "unit price",
       "price",
       "item price",
-      "unit price",
+      "total amount",
+      "shipment item subtotal",
       "amount",
       "order total",
       "fx transaction amount",
@@ -136,6 +147,7 @@ export const FIELD_ALIASES: Record<
     currency: ["currency", "currency code"],
     order_status: ["order status", "status"],
     payment_method: [
+      "payment method type",
       "payment method",
       "payment instrument",
       "card",
@@ -148,31 +160,43 @@ export const FIELD_ALIASES: Record<
     order_date: ["order date", "purchase date"],
     asin: ["asin"],
     product_title: ["title", "product name", "item name"],
-    quantity: ["quantity", "qty"],
+    quantity: [
+      "quantity ordered",
+      "original quantity",
+      "affected item quantity",
+      "quantity",
+      "qty",
+    ],
     price: [
+      "transaction amount",
       "price",
       "item price",
-      "amount",
       "fx transaction amount",
-      "transaction amount",
+      "amount",
     ],
-    currency: ["currency", "currency code"],
+    currency: [
+      "base currency code",
+      "price currency code",
+      "currency",
+      "currency code",
+    ],
     order_status: ["order status", "status"],
     seller: ["seller", "sold by"],
     gift_flag: ["gift", "is gift", "gift flag"],
   },
   cart_history: {
     asin: ["asin"],
-    quantity: ["quantity", "qty"],
+    product_title: ["product name", "title"],
+    quantity: ["order quantity", "quantity", "qty"],
     cart_add_date: [
-      "cart add date",
       "date added to cart",
+      "cart add date",
       "add to cart date",
       "cart-add date",
     ],
-    prime_eligible: ["prime eligible", "prime-eligible", "prime"],
-    one_click_buy: ["one click", "one-click", "1-click"],
-    gift_flag: ["gift wrap", "gift-wrap", "gift"],
+    prime_eligible: ["prime subscription", "prime eligible", "prime-eligible", "prime"],
+    one_click_buy: ["one-click enabled", "one click", "one-click", "1-click"],
+    gift_flag: ["gift wrapped", "gift wrap", "gift-wrap", "gift"],
   },
   return_requests: {
     order_id: ["order id", "orderid"],
@@ -180,31 +204,59 @@ export const FIELD_ALIASES: Record<
     return_date: ["request date", "return date", "date requested"],
     asin: ["asin"],
     product_title: ["title", "product name"],
-    return_reason: ["return reason", "reason"],
+    return_reason: ["return reason code", "return reason", "reason"],
     quantity: ["quantity", "qty"],
   },
   returns_status: {
     order_id: ["order id", "orderid"],
-    return_date: ["return date", "date returned"],
-    refund_amount: ["amount", "refund amount", "return amount"],
-    return_reason: ["reason", "return reason"],
-    resolution: ["resolution", "return resolution"],
-    order_status: ["return state", "status", "state"],
+    return_date: ["date of return", "return date", "return creation date", "date returned"],
+    refund_amount: ["return amount", "amount", "refund amount"],
+    currency: ["return amount currency", "currency"],
+    return_reason: ["return reason", "reason"],
+    resolution: ["return resolution", "resolution"],
+    refund_status: ["return receivable state", "return state", "status", "state"],
   },
   refund_details: {
     order_id: ["order id", "orderid"],
     return_id: ["return id", "order/return id"],
-    return_date: ["return date"],
+    return_date: ["refund date", "creation date", "return date"],
     refund_amount: ["refund amount", "amount"],
-    refund_status: ["refund status", "return status", "status"],
-    quantity: ["quantity", "qty"],
+    refund_status: ["payment status", "refund status", "return status", "status"],
+    return_reason: ["reversal reason", "reason"],
+    quantity: ["order quantity", "quantity", "qty"],
+    currency: ["currency"],
   },
   digital_returns: {
+    order_id: ["order id", "orderid"],
     asin: ["asin"],
     product_title: ["title", "product name"],
     return_date: ["return date", "date"],
-    refund_amount: ["refund amount", "amount"],
+    refund_amount: [
+      "transaction amount",
+      "fx transaction amount",
+      "amount refunded",
+      "refund amount",
+      "amount",
+    ],
     refund_status: ["return status", "status"],
+    return_reason: ["reason code", "reason"],
+    quantity: ["quantity", "affected item quantity"],
+  },
+  digital_borrowed_items: {
+    asin: ["asin"],
+    product_title: ["product name", "title"],
+    order_date: ["loan creation date", "loan acceptance date"],
+    order_status: ["loan status"],
+    content_type: ["content type"],
+    loan_program: ["loan program"],
+  },
+  orders_returns_v2: {
+    order_id: ["order id", "orderid"],
+    return_date: ["request date", "return date"],
+    refund_amount: ["refund amount", "amount"],
+    currency: ["currency code", "currency"],
+    refund_status: ["refund status", "status"],
+    return_reason: ["reason for non-refund", "reason"],
   },
   replacement_orders: {
     original_order_id: [
@@ -250,17 +302,6 @@ export function toVfsName(filename: string): string {
 
 export function quoteIdent(identifier: string): string {
   return `"${identifier.replace(/"/g, '""')}"`;
-}
-
-/** Strip currency symbols/text; DuckDB regexp_replace rejects empty replacement in some builds. */
-function parseMoneySql(col: string, field: CanonicalField): string {
-  return `TRY_CAST(
-    replace(
-      regexp_extract(CAST(${col} AS VARCHAR), '[-+]?[0-9,]*\\.?[0-9]+'),
-      ',',
-      ''
-    ) AS DOUBLE
-  ) AS ${field}`;
 }
 
 function aliasMatches(header: string, alias: string): boolean {
@@ -320,89 +361,14 @@ export function buildColumnMappings(
   return mappings;
 }
 
-function sqlForField(
-  mapping: ColumnMapping | undefined,
-  field: CanonicalField,
-): string {
-  if (!mapping?.canonical) return `NULL::VARCHAR AS ${field}`;
-
-  const col = quoteIdent(mapping.sourceColumn);
-
-  switch (field) {
-    case "order_date":
-    case "return_date":
-    case "cart_add_date":
-    case "ship_date":
-      return `COALESCE(
-        TRY_CAST(${col} AS TIMESTAMP),
-        TRY_STRPTIME(CAST(${col} AS VARCHAR), '%Y-%m-%d %H:%M:%S'),
-        TRY_STRPTIME(CAST(${col} AS VARCHAR), '%d/%m/%Y'),
-        TRY_STRPTIME(CAST(${col} AS VARCHAR), '%m/%d/%Y'),
-        TRY_STRPTIME(CAST(${col} AS VARCHAR), '%Y-%m-%d')
-      ) AS ${field}`;
-    case "quantity":
-      return `TRY_CAST(${col} AS INTEGER) AS ${field}`;
-    case "price":
-    case "refund_amount":
-      return parseMoneySql(col, field);
-    case "prime_eligible":
-    case "one_click_buy":
-    case "gift_flag":
-      return `TRY_CAST(${col} AS BOOLEAN) AS ${field}`;
-    default:
-      return `CAST(${col} AS VARCHAR) AS ${field}`;
-  }
-}
-
-export function buildCanonicalViewSql(
-  fileType: AmazonFileType,
-  rawTable: string,
-  viewName: string,
-  mappings: ColumnMapping[],
-): string | null {
-  if (!ORDER_FILE_TYPES.includes(fileType) && fileType !== "unknown") {
-    return null;
-  }
-
-  if (!ORDER_FILE_TYPES.includes(fileType)) return null;
-
-  const mappingByCanonical = new Map<CanonicalField, ColumnMapping>();
-  for (const mapping of mappings) {
-    if (mapping.canonical) {
-      mappingByCanonical.set(mapping.canonical, mapping);
-    }
-  }
-
-  const selectParts = ORDER_CANONICAL_FIELDS.map((field) =>
-    sqlForField(mappingByCanonical.get(field), field),
-  );
-
-  const priceMapping = mappingByCanonical.get("price");
-  if (priceMapping?.sourceColumn) {
-    selectParts.push(
-      `CAST(${quoteIdent(priceMapping.sourceColumn)} AS VARCHAR) AS price_text`,
-    );
-  } else {
-    selectParts.push(`NULL::VARCHAR AS price_text`);
-  }
-
-  selectParts.push(`'${fileType}' AS source_file`);
-
-  return `CREATE OR REPLACE VIEW ${viewName} AS
-SELECT
-  ${selectParts.join(",\n  ")}
-FROM ${rawTable}`;
-}
-
-export function buildAllOrdersViewSql(viewNames: string[]): string | null {
-  if (viewNames.length === 0) return null;
-  if (viewNames.length === 1) {
-    return `CREATE OR REPLACE VIEW canonical_all_orders AS SELECT * FROM ${viewNames[0]}`;
-  }
-  return `CREATE OR REPLACE VIEW canonical_all_orders AS\n${viewNames
-    .map((name) => `SELECT * FROM ${name}`)
-    .join("\nUNION ALL BY NAME\n")}`;
-}
+export {
+  buildAllOrdersViewSql,
+  buildAllRefundsViewSql,
+  buildCanonicalViewSql,
+  canonicalViewName,
+  ORDER_VIEW_TYPES,
+  REFUND_VIEW_TYPES,
+} from "@/lib/schema-views";
 
 export function getMissingRequiredFields(
   fileType: AmazonFileType,

@@ -3,11 +3,14 @@ import { MANUAL_DUCKDB_BUNDLES } from "@/lib/duckdb-bundle";
 import type { WorkerRequest, WorkerResponse } from "@/lib/duckdb-types";
 import {
   buildAllOrdersViewSql,
+  buildAllRefundsViewSql,
   buildCanonicalViewSql,
   buildColumnMappings,
+  canonicalViewName,
   detectFileType,
   getMissingRequiredFields,
-  ORDER_FILE_TYPES,
+  ORDER_VIEW_TYPES,
+  REFUND_VIEW_TYPES,
   toTableSlug,
   toVfsName,
   type FileSchemaInfo,
@@ -119,27 +122,33 @@ async function ingestFiles(
 
 async function createViews(schemas: FileSchemaInfo[]) {
   const orderViews: string[] = [];
+  const refundViews: string[] = [];
 
   for (const schema of schemas) {
-    if (!ORDER_FILE_TYPES.includes(schema.fileType)) continue;
-
-    const viewName = `canonical_${schema.fileType}`;
+    const viewName = canonicalViewName(schema.fileType);
     const sql = buildCanonicalViewSql(
       schema.fileType,
       schema.rawTable,
       viewName,
       schema.mappings,
     );
-    if (sql) {
-      await exec(sql);
+    if (!sql) continue;
+
+    await exec(sql);
+
+    if (ORDER_VIEW_TYPES.includes(schema.fileType)) {
       orderViews.push(viewName);
+    }
+    if (REFUND_VIEW_TYPES.includes(schema.fileType)) {
+      refundViews.push(viewName);
     }
   }
 
   const allOrdersSql = buildAllOrdersViewSql(orderViews);
-  if (allOrdersSql) {
-    await exec(allOrdersSql);
-  }
+  if (allOrdersSql) await exec(allOrdersSql);
+
+  const allRefundsSql = buildAllRefundsViewSql(refundViews);
+  if (allRefundsSql) await exec(allRefundsSql);
 }
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {

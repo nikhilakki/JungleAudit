@@ -212,16 +212,19 @@ export function resolveDateFilter(state: DateFilterState): ResolvedDateFilter {
   };
 }
 
-export function buildDateSqlClause(filter: ResolvedDateFilter): string {
+export function buildDateSqlClause(
+  filter: ResolvedDateFilter,
+  column = "order_date",
+): string {
   const parts: string[] = [];
   if (filter.start) {
-    parts.push(`order_date >= TIMESTAMP '${filter.start} 00:00:00'`);
+    parts.push(`${column} >= TIMESTAMP '${filter.start} 00:00:00'`);
   }
   if (filter.end) {
     const endExclusive = formatIsoDate(
       new Date(Date.parse(`${filter.end}T00:00:00Z`) + 86400000),
     );
-    parts.push(`order_date < TIMESTAMP '${endExclusive} 00:00:00'`);
+    parts.push(`${column} < TIMESTAMP '${endExclusive} 00:00:00'`);
   }
   return parts.length > 0 ? ` AND ${parts.join(" AND ")}` : "";
 }

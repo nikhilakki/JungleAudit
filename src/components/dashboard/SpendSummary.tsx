@@ -28,8 +28,11 @@ export function SpendSummary({ summary, currency }: SpendSummaryProps) {
         ? "Currency inferred from price symbols"
         : "Currency from export data";
 
+  const aov =
+    summary.order_count > 0 ? summary.total_spend / summary.order_count : null;
+
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-3">
       <Card>
         <CardHeader>
           <CardTitle>Total spend</CardTitle>
@@ -58,6 +61,20 @@ export function SpendSummary({ summary, currency }: SpendSummaryProps) {
               {summary.skipped_rows.toLocaleString()} rows skipped (missing date/price or cancelled)
             </p>
           ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Avg order value</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl font-semibold tracking-tight">
+            {aov !== null ? formatCurrency(aov, currency.code) : "—"}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Total spend divided by distinct orders
+          </p>
         </CardContent>
       </Card>
     </div>
