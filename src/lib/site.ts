@@ -10,7 +10,7 @@ export const SITE_DESCRIPTION =
 
 /** Public site URL (set at build time for Cloudflare Pages or custom domain). */
 export const SITE_URL =
-  import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ?? "https://jungleaudit.pages.dev";
+  import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ?? "https://jungleaudit.org";
 
 export const SITE_OG_IMAGE = `${SITE_URL}/landing-hero.jpg`;
 

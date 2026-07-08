@@ -4,6 +4,29 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
+function stripLocalDuckdbAssetsPlugin(useR2Assets: boolean): Plugin {
+  return {
+    name: "strip-local-duckdb-assets",
+    closeBundle() {
+      if (!useR2Assets) return;
+
+      const assetsDir = path.resolve("dist/assets");
+      if (!fs.existsSync(assetsDir)) return;
+
+      for (const file of fs.readdirSync(assetsDir)) {
+        if (
+          file.endsWith(".wasm") ||
+          file.includes("duckdb-bundle.local") ||
+          file.includes("duckdb-browser-eh.worker") ||
+          file.includes("duckdb-browser-mvp.worker")
+        ) {
+          fs.unlinkSync(path.join(assetsDir, file));
+        }
+      }
+    },
+  };
+}
+
 function seoSitemapPlugin(siteUrl: string): Plugin {
   const routes = ["/", "/#/privacy", "/#/terms", "/#/disclaimer"];
 
@@ -35,10 +58,16 @@ ${urls}
 }
 
 const siteUrl =
-  process.env.VITE_SITE_URL?.replace(/\/$/, "") ?? "https://jungleaudit.pages.dev";
+  process.env.VITE_SITE_URL?.replace(/\/$/, "") ?? "https://jungleaudit.org";
+const useR2Assets = Boolean(process.env.VITE_DUCKDB_ASSET_BASE?.trim());
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), seoSitemapPlugin(siteUrl)],
+  plugins: [
+    react(),
+    tailwindcss(),
+    seoSitemapPlugin(siteUrl),
+    stripLocalDuckdbAssetsPlugin(useR2Assets),
+  ],
   assetsInclude: ["**/*.wasm"],
   optimizeDeps: {
     exclude: ["@duckdb/duckdb-wasm"],
