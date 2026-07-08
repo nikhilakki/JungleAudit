@@ -42,7 +42,7 @@ JungleAudit is built around a simple guarantee: **your order data stays on your 
 
 - Analysis runs entirely in the browser via DuckDB in a Web Worker
 - CSV files are read locally — nothing is sent to a JungleAudit server
-- No tracking pixels or third-party analytics in the app
+- Optional GA4 on the hosted site (aggregate traffic only — never your order data); disabled when self-hosting without a measurement ID
 - Open source — inspect the pipeline yourself, or watch the Network tab while you analyze
 
 ## Request your Amazon data

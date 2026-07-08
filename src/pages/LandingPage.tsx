@@ -15,10 +15,12 @@ import {
   PaymentDonutMock,
   SpendTrendMock,
 } from "@/components/landing/LandingVisuals";
+import { LandingFaq } from "@/components/landing/LandingFaq";
 import { SupportProject } from "@/components/layout/SupportProject";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { AppRoute } from "@/hooks/useHashRoute";
+import { trackEvent } from "@/lib/analytics/ga4";
 
 const HERO_IMAGE = "/landing-hero.jpg";
 
@@ -53,10 +55,17 @@ type LandingPageProps = {
   onNavigate: (route: AppRoute) => void;
 };
 
+function trackCta(action: string) {
+  trackEvent("cta_click", { action, page: "landing" });
+}
+
 export function LandingPage({ onNavigate }: LandingPageProps) {
   return (
-    <div className="flex flex-col gap-20 pb-4">
-      <section className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-accent/80 via-card to-card p-6 md:p-10">
+    <main className="flex flex-col gap-20 pb-4">
+      <section
+        aria-labelledby="hero-heading"
+        className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-accent/80 via-card to-card p-6 md:p-10"
+      >
         <div
           className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-primary/10 blur-3xl"
           aria-hidden="true"
@@ -69,7 +78,10 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 JungleAudit
               </p>
             </div>
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+            <h1
+              id="hero-heading"
+              className="text-4xl font-semibold tracking-tight md:text-5xl"
+            >
               Understand your Amazon spending — privately
             </h1>
             <p className="max-w-xl text-lg text-muted-foreground">
@@ -78,11 +90,24 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               uploaded to a server.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button size="lg" onClick={() => onNavigate("app")}>
+              <Button
+                size="lg"
+                onClick={() => {
+                  trackCta("start_analyzing");
+                  onNavigate("app");
+                }}
+              >
                 <Upload className="size-4" />
                 Start analyzing
               </Button>
-              <Button size="lg" variant="outline" onClick={() => onNavigate("privacy")}>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => {
+                  trackCta("privacy");
+                  onNavigate("privacy");
+                }}
+              >
                 <Shield className="size-4" />
                 How privacy works
               </Button>
@@ -117,9 +142,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
+      <section aria-labelledby="how-it-works-heading" className="flex flex-col gap-8">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          <h2
+            id="how-it-works-heading"
+            className="text-2xl font-semibold tracking-tight md:text-3xl"
+          >
             How it works
           </h2>
           <p className="mx-auto mt-2 max-w-lg text-muted-foreground">
@@ -129,9 +157,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         <FlowStepsVisual />
       </section>
 
-      <section className="flex flex-col gap-8">
+      <section aria-labelledby="features-heading" className="flex flex-col gap-8">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          <h2
+            id="features-heading"
+            className="text-2xl font-semibold tracking-tight md:text-3xl"
+          >
             What you can learn
           </h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">
@@ -257,20 +288,34 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         </div>
       </section>
 
+      <LandingFaq />
+
       <SupportProject />
 
-      <section className="flex flex-col items-center gap-6 rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 to-transparent px-6 py-12 text-center">
+      <section
+        aria-labelledby="cta-heading"
+        className="flex flex-col items-center gap-6 rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 to-transparent px-6 py-12 text-center"
+      >
         <Mascot size="lg" />
-        <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+        <h2
+          id="cta-heading"
+          className="text-2xl font-semibold tracking-tight md:text-3xl"
+        >
           Ready to audit your Amazon spend?
         </h2>
         <p className="max-w-md text-muted-foreground">
           Drop your export folder and explore trends in under a minute.
         </p>
-        <Button size="lg" onClick={() => onNavigate("app")}>
+        <Button
+          size="lg"
+          onClick={() => {
+            trackCta("get_started");
+            onNavigate("app");
+          }}
+        >
           Get started — it&apos;s free
         </Button>
       </section>
-    </div>
+    </main>
   );
 }

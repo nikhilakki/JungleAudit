@@ -4,7 +4,11 @@ import { PrivacyDisclaimerModal } from "@/components/legal/PrivacyDisclaimerModa
 import { PrivacyPage } from "@/components/legal/PrivacyPage";
 import { TermsPage } from "@/components/legal/TermsPage";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { type AppRoute, useHashRoute } from "@/hooks/useHashRoute";
+import { useSiteHead } from "@/hooks/useSiteHead";
+import { trackEvent } from "@/lib/analytics/ga4";
 import {
   isDisclaimerSnoozed,
   snoozeDisclaimerForWeek,
@@ -15,6 +19,10 @@ import { LandingPage } from "@/pages/LandingPage";
 export default function App() {
   const { route, navigate } = useHashRoute();
   const [disclaimerOpen, setDisclaimerOpen] = useState(() => !isDisclaimerSnoozed());
+  const analyticsEnabled = !disclaimerOpen;
+
+  useSiteHead(route);
+  useAnalytics({ route, analyticsEnabled });
 
   const handleNavigate = useCallback(
     (next: AppRoute) => {
@@ -32,11 +40,17 @@ export default function App() {
 
   return (
     <>
+      <JsonLd route={route} />
+
       <PrivacyDisclaimerModal
         open={disclaimerOpen}
-        onAccept={() => setDisclaimerOpen(false)}
+        onAccept={() => {
+          trackEvent("disclaimer_accepted");
+          setDisclaimerOpen(false);
+        }}
         onSnoozeForWeek={() => {
           snoozeDisclaimerForWeek();
+          trackEvent("disclaimer_snoozed");
           setDisclaimerOpen(false);
         }}
         onNavigate={handleNavigate}

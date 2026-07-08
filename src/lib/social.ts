@@ -1,4 +1,4 @@
-export const GITHUB_REPO_URL = "https://github.com/nikhilakki/subprime";
+export const GITHUB_REPO_URL = "https://github.com/nikhilakki/JungleAudit";
 export const X_PROFILE_URL = "https://x.com/nik_akki";
 export const X_HANDLE = "nik_akki";
 
