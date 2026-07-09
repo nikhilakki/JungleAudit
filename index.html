@@ -97,6 +97,14 @@
           },
           {
             "@type": "Question",
+            "name": "How can I verify my data never leaves my device?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Right-click the page and choose Inspect (or press F12), open the Network tab, and reload. Then upload your export and run the analysis — no requests send your CSV contents to external domains. Same-origin loads of the app's own static assets (JS, WASM) are expected."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "What insights does JungleAudit provide?",
             "acceptedAnswer": {
               "@type": "Answer",
@@ -228,6 +236,10 @@
               <details class="rounded-2xl bg-muted px-6 py-5">
                 <summary class="cursor-pointer font-semibold">Does JungleAudit upload my Amazon orders to the cloud?</summary>
                 <p class="mt-3 text-sm text-muted-foreground">No. JungleAudit reads your CSV files locally in a browser worker and queries them with DuckDB WASM. You can verify this in DevTools → Network while uploading and analyzing — no outbound requests contain your order data.</p>
+              </details>
+              <details class="rounded-2xl bg-muted px-6 py-5">
+                <summary class="cursor-pointer font-semibold">How can I verify my data never leaves my device?</summary>
+                <p class="mt-3 text-sm text-muted-foreground">Right-click the page and choose Inspect (or press F12), open the Network tab, and reload. Then upload your export and run the analysis — no requests send your CSV contents to external domains. Same-origin loads of the app's own static assets (JS, WASM) are expected.</p>
               </details>
               <details class="rounded-2xl bg-muted px-6 py-5">
                 <summary class="cursor-pointer font-semibold">What insights does JungleAudit provide?</summary>

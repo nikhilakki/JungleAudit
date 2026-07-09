@@ -51,6 +51,11 @@ export const LANDING_FAQ = [
       "No. JungleAudit reads your CSV files locally in a browser worker and queries them with DuckDB WASM. You can verify this in DevTools → Network while uploading and analyzing — no outbound requests contain your order data.",
   },
   {
+    question: "How can I verify my data never leaves my device?",
+    answer:
+      "Right-click the page and choose Inspect (or press F12), open the Network tab, and reload. Then upload your export and run the analysis — no requests send your CSV contents to external domains. Same-origin loads of the app's own static assets (JS, WASM) are expected.",
+  },
+  {
     question: "What insights does JungleAudit provide?",
     answer:
       "Total spend and monthly trends, payment method breakdown, refunds and net spend, return reasons, Kindle Unlimited and library borrowing activity, and date-range filtering across charts — depending on which export files you include.",

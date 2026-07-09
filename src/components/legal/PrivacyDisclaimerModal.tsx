@@ -1,5 +1,5 @@
-import { Lock, Network } from "lucide-react";
-import { useId, useState } from "react";
+import { Lock } from "lucide-react";
+import { useId } from "react";
 import type { AppRoute } from "@/hooks/useHashRoute";
 
 type PrivacyDisclaimerModalProps = {
@@ -15,7 +15,6 @@ export function PrivacyDisclaimerModal({
   onSnoozeForWeek,
   onNavigate,
 }: PrivacyDisclaimerModalProps) {
-  const [showNetworkTip, setShowNetworkTip] = useState(false);
   const titleId = useId();
   const descriptionId = useId();
 
@@ -61,32 +60,6 @@ export function PrivacyDisclaimerModal({
               data.
             </li>
           </ul>
-
-          <button
-            type="button"
-            className="flex w-full items-center justify-between gap-2 rounded-2xl bg-muted px-4 py-3 text-left text-sm transition-opacity hover:opacity-80"
-            onClick={() => setShowNetworkTip((prev) => !prev)}
-          >
-            <span className="flex items-center gap-2 font-medium">
-              <Network className="size-4" aria-hidden="true" />
-              Optional: verify with Inspect / Network tab
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {showNetworkTip ? "Hide" : "Show"}
-            </span>
-          </button>
-
-          {showNetworkTip ? (
-            <ol className="list-decimal space-y-2 rounded-2xl bg-muted px-5 py-4 pl-10 text-muted-foreground">
-              <li>Right-click the page → Inspect (or press F12).</li>
-              <li>Open the Network tab and reload the page.</li>
-              <li>Upload your export and run analysis.</li>
-              <li>
-                Confirm there are no requests sending your CSV contents to external
-                domains. Same-origin asset loads for the app engine are expected.
-              </li>
-            </ol>
-          ) : null}
 
           <p className="text-xs text-muted-foreground">
             Full details in our{" "}
