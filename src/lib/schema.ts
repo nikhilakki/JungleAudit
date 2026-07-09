@@ -71,7 +71,11 @@ export const FILE_NAME_PATTERNS: Record<
   Exclude<AmazonFileType, "unknown">,
   RegExp[]
 > = {
-  order_history: [/^order[\s_-]*history\.csv$/i],
+  order_history: [
+    /^order[\s_-]*history\.csv$/i,
+    // amazon.com "Your Orders" exports: Retail.OrderHistory.1/Retail.OrderHistory.1.csv
+    /^retail[\s_.-]*order[\s_.-]*history.*\.csv$/i,
+  ],
   digital_content_orders: [/^digital[\s_-]*content[\s_-]*orders\.csv$/i],
   cart_history: [/^cart[\s_-]*history\.csv$/i],
   return_requests: [/^return[\s_-]*requests\.csv$/i],
@@ -141,6 +145,7 @@ export const FIELD_ALIASES: Record<
       "shipment item subtotal",
       "amount",
       "order total",
+      "total owed",
       "fx transaction amount",
       "transaction amount",
     ],

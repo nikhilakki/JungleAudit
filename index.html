@@ -62,29 +62,194 @@
         "description": "Local-first Amazon spend analyzer that runs entirely in your browser. Upload your Request My Data export for spend trends, refunds, and payment insights without sending files to a server.",
         "url": "https://jungleaudit.org/",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "author": { "@type": "Person", "name": "Nikhil Akki", "url": "https://x.com/nik_akki" }
+        "author": { "@type": "Person", "name": "Nikhil Akki", "url": "https://x.com/nik_akki" },
+        "sameAs": ["https://github.com/nikhilakki/JungleAudit"]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is JungleAudit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "JungleAudit is a free, open-source web app that analyzes your Amazon spending from the CSV files in Amazon's Request My Data export. It runs entirely in your browser using DuckDB — your order files are never uploaded to a server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I get my Amazon data for JungleAudit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sign in to your Amazon account, submit a Request My Data (personal information) request for Order History and Digital Orders, confirm via email, then download the ZIP when ready. Unzip the CSVs and drop them into JungleAudit."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does JungleAudit upload my Amazon orders to the cloud?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. JungleAudit reads your CSV files locally in a browser worker and queries them with DuckDB WASM. You can verify this in DevTools → Network while uploading and analyzing — no outbound requests contain your order data."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What insights does JungleAudit provide?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Total spend and monthly trends, payment method breakdown, refunds and net spend, return reasons, Kindle Unlimited and library borrowing activity, and date-range filtering across charts — depending on which export files you include."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need an account to use JungleAudit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No account or sign-up is required. Open the site, accept the privacy notice, upload your export, and explore charts immediately."
+            }
+          }
+        ]
       }
     </script>
   </head>
   <body>
     <noscript>
-      <article style="max-width: 42rem; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; line-height: 1.6;">
-        <h1>JungleAudit — Amazon spend analyzer (local &amp; private)</h1>
-        <p>
-          JungleAudit analyzes your Amazon <strong>Request My Data</strong> export in your browser.
-          Your order CSV files are never uploaded to a server. Explore spend trends, payment
-          breakdowns, refunds, and Kindle borrowing insights.
-        </p>
-        <h2>How it works</h2>
-        <ol>
-          <li>Request your Amazon data from your marketplace account.</li>
-          <li>Download and unzip the export when Amazon emails you.</li>
-          <li>Open JungleAudit with JavaScript enabled and upload your CSVs.</li>
-        </ol>
-        <p><a href="#/app">Open the analyzer</a> · <a href="#/privacy">Privacy policy</a></p>
-      </article>
+      <p style="max-width: 42rem; margin: 1.5rem auto 0; padding: 0 1rem; font-family: system-ui, sans-serif;">
+        The JungleAudit analyzer needs JavaScript — all analysis runs locally in your browser.
+        The information below works without it.
+      </p>
     </noscript>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static, crawlable landing content. React replaces this on mount; keep copy in
+           sync with LandingPage.tsx / lib/site.ts. -->
+      <div class="min-h-screen bg-background text-foreground">
+        <div class="hero-gradient">
+          <div class="mx-auto w-full max-w-6xl px-4 md:px-8">
+            <header class="flex items-start justify-between gap-6 pt-6 md:pt-8">
+              <a href="/" class="flex items-center gap-2.5" aria-label="JungleAudit home">
+                <img src="/jungleaudit-logo.webp" alt="" width="224" height="224" class="size-9 rounded-full" />
+                <span class="font-display text-xl font-extrabold tracking-tight underline decoration-[1.5px] underline-offset-4">JungleAudit</span>
+              </a>
+              <nav aria-label="Landing" class="hidden gap-5 text-sm sm:flex">
+                <a href="#/app" class="link-underline">Analyzer</a>
+                <a href="/how-much-have-i-spent-on-amazon/" class="link-underline">Guide</a>
+                <a href="#/privacy" class="link-underline">Privacy</a>
+                <a href="https://github.com/nikhilakki/JungleAudit" rel="noreferrer" class="link-underline">GitHub</a>
+              </nav>
+            </header>
+            <div class="flex flex-col items-center gap-6 py-24 text-center md:py-32">
+              <p class="text-sm font-medium text-foreground/80 md:text-base">
+                Local-first Amazon spend analytics — nothing leaves your browser.
+              </p>
+              <h1 class="max-w-4xl font-display text-5xl font-extrabold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
+                Understand Your Amazon Spending. Privately.
+              </h1>
+              <p class="mx-auto max-w-xl text-base text-foreground/70 md:text-lg">
+                Upload your "Request My Data" export and get charts, totals, and refund insights
+                in seconds. Everything runs in your browser. Nothing is uploaded to a server.
+              </p>
+              <a href="#/app" class="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-medium text-primary-foreground">
+                Start analyzing
+              </a>
+              <p class="text-sm text-foreground/70">Local-only analysis · No account required</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-16 md:px-8">
+          <section aria-labelledby="static-how">
+            <h2 id="static-how" class="font-display text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl">
+              From Export to Insights. In Three Steps.
+            </h2>
+            <ol class="mt-6 flex max-w-2xl list-decimal flex-col gap-3 pl-6 text-muted-foreground">
+              <li>Request your data from Amazon (Account → Data &amp; Privacy → Request My Data) — see the
+                <a href="/how-much-have-i-spent-on-amazon/" class="underline underline-offset-4">step-by-step guide</a>.</li>
+              <li>Download and unzip the export when Amazon emails you the link.</li>
+              <li>Drop the CSVs into the <a href="#/app" class="underline underline-offset-4">analyzer</a> and explore charts and totals.</li>
+            </ol>
+            <p class="mt-4 text-sm text-muted-foreground">
+              Works with: Order History · Digital Orders · Returns · Payments
+            </p>
+          </section>
+
+          <section aria-labelledby="static-features">
+            <h2 id="static-features" class="font-display text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl">
+              Every Rupee, Every Refund, Every Read.
+            </h2>
+            <div class="mt-6 grid max-w-4xl gap-6 md:grid-cols-2">
+              <div>
+                <h3 class="text-lg font-bold">Total spend &amp; trends</h3>
+                <p class="text-sm text-muted-foreground">See lifetime spend, order counts, and monthly charts from your export.</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold">Payment breakdown</h3>
+                <p class="text-sm text-muted-foreground">Understand how much went on each card, UPI, or gift balance.</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold">Refunds &amp; net spend</h3>
+                <p class="text-sm text-muted-foreground">Subtract returns, spot top reasons, and track refund trends over time.</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold">Digital borrowing</h3>
+                <p class="text-sm text-muted-foreground">Kindle Unlimited and library loans — reading habits separate from purchases.</p>
+              </div>
+            </div>
+          </section>
+
+          <section aria-labelledby="static-privacy">
+            <h2 id="static-privacy" class="font-display text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl">
+              Your Orders Never Leave Your Machine.
+            </h2>
+            <p class="mt-4 max-w-2xl text-muted-foreground">
+              JungleAudit uses DuckDB in a browser worker to query your files locally. There is no
+              backend ingestion step. You can verify this yourself in DevTools → Network while
+              uploading and analyzing. No account or email required, no CSV upload to third-party
+              analytics, and the code is open source on
+              <a href="https://github.com/nikhilakki/JungleAudit" rel="noreferrer" class="underline underline-offset-4">GitHub</a>.
+            </p>
+          </section>
+
+          <section id="faq" aria-labelledby="static-faq">
+            <h2 id="static-faq" class="font-display text-4xl font-extrabold leading-[1.1] tracking-tight md:text-5xl">
+              Questions, Answered.
+            </h2>
+            <div class="mt-6 flex max-w-3xl flex-col gap-3">
+              <details class="rounded-2xl bg-muted px-6 py-5">
+                <summary class="cursor-pointer font-semibold">What is JungleAudit?</summary>
+                <p class="mt-3 text-sm text-muted-foreground">JungleAudit is a free, open-source web app that analyzes your Amazon spending from the CSV files in Amazon's Request My Data export. It runs entirely in your browser using DuckDB — your order files are never uploaded to a server.</p>
+              </details>
+              <details class="rounded-2xl bg-muted px-6 py-5">
+                <summary class="cursor-pointer font-semibold">How do I get my Amazon data for JungleAudit?</summary>
+                <p class="mt-3 text-sm text-muted-foreground">Sign in to your Amazon account, submit a Request My Data (personal information) request for Order History and Digital Orders, confirm via email, then download the ZIP when ready. Unzip the CSVs and drop them into JungleAudit.</p>
+              </details>
+              <details class="rounded-2xl bg-muted px-6 py-5">
+                <summary class="cursor-pointer font-semibold">Does JungleAudit upload my Amazon orders to the cloud?</summary>
+                <p class="mt-3 text-sm text-muted-foreground">No. JungleAudit reads your CSV files locally in a browser worker and queries them with DuckDB WASM. You can verify this in DevTools → Network while uploading and analyzing — no outbound requests contain your order data.</p>
+              </details>
+              <details class="rounded-2xl bg-muted px-6 py-5">
+                <summary class="cursor-pointer font-semibold">What insights does JungleAudit provide?</summary>
+                <p class="mt-3 text-sm text-muted-foreground">Total spend and monthly trends, payment method breakdown, refunds and net spend, return reasons, Kindle Unlimited and library borrowing activity, and date-range filtering across charts — depending on which export files you include.</p>
+              </details>
+              <details class="rounded-2xl bg-muted px-6 py-5">
+                <summary class="cursor-pointer font-semibold">Do I need an account to use JungleAudit?</summary>
+                <p class="mt-3 text-sm text-muted-foreground">No account or sign-up is required. Open the site, accept the privacy notice, upload your export, and explore charts immediately.</p>
+              </details>
+            </div>
+          </section>
+
+          <footer class="flex flex-wrap gap-6 border-t border-border pt-8 text-sm text-muted-foreground">
+            <a href="#/app">Analyzer</a>
+            <a href="/how-much-have-i-spent-on-amazon/">How much have I spent on Amazon?</a>
+            <a href="#/privacy">Privacy</a>
+            <a href="#/terms">Terms</a>
+            <a href="https://github.com/nikhilakki/JungleAudit" rel="noreferrer">GitHub</a>
+          </footer>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

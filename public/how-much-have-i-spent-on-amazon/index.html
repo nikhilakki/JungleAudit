@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How Much Have I Spent on Amazon? Find Out Free (2026)</title>
+    <meta
+      name="description"
+      content="Amazon removed the order history CSV in 2023. The free 2026 way to see your total Amazon spending: request your data export and analyze it in your browser."
+    />
+    <meta name="author" content="Nikhil Akki" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://jungleaudit.org/how-much-have-i-spent-on-amazon/" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM site summary" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="JungleAudit" />
+    <meta property="og:title" content="How Much Have I Spent on Amazon? Find Out Free (2026)" />
+    <meta
+      property="og:description"
+      content="Amazon removed the order history CSV in 2023. Here's the free, private way to see your lifetime Amazon spending."
+    />
+    <meta property="og:image" content="https://jungleaudit.org/og-image.webp" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="JungleAudit — capybara mascot beside a rising spend chart and padlock. Local-first, no uploads."
+    />
+    <meta property="og:url" content="https://jungleaudit.org/how-much-have-i-spent-on-amazon/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How Much Have I Spent on Amazon? Find Out Free (2026)" />
+    <meta
+      name="twitter:description"
+      content="Amazon removed the order history CSV in 2023. Here's the free, private way to see your lifetime Amazon spending."
+    />
+    <meta name="twitter:image" content="https://jungleaudit.org/og-image.webp" />
+    <meta
+      name="twitter:image:alt"
+      content="JungleAudit — capybara mascot beside a rising spend chart and padlock. Local-first, no uploads."
+    />
+    <meta name="theme-color" content="#fdfdfd" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How Much Have I Spent on Amazon? Find Out Free (2026)",
+        "description": "Amazon removed the order history CSV in 2023. The free 2026 way to see your total Amazon spending: request your data export, then analyze it privately in your browser.",
+        "url": "https://jungleaudit.org/how-much-have-i-spent-on-amazon/",
+        "datePublished": "2026-07-09",
+        "dateModified": "2026-07-09",
+        "image": "https://jungleaudit.org/og-image.webp",
+        "author": { "@type": "Person", "name": "Nikhil Akki", "url": "https://x.com/nik_akki" },
+        "publisher": { "@type": "Organization", "name": "JungleAudit", "url": "https://jungleaudit.org/" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "JungleAudit", "item": "https://jungleaudit.org/" },
+          { "@type": "ListItem", "position": 2, "name": "How Much Have I Spent on Amazon?", "item": "https://jungleaudit.org/how-much-have-i-spent-on-amazon/" }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I still download my Amazon order history as a CSV?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not from the old Order History Reports page — Amazon retired that feature in March 2023. The only official way to get your complete order history now is a Request My Data export from Amazon's privacy portal, which arrives as a ZIP of CSV files."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How long does Amazon's Request My Data export take?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Usually a few hours to a couple of days. Amazon officially allows itself up to 30 days, but most order-history requests complete much faster. You'll get an email with a download link when it's ready."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is it safe to analyze my Amazon export with an online tool?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It depends on the tool. JungleAudit runs entirely in your browser using DuckDB WASM — your CSV files are never uploaded to a server, and you can verify that yourself in DevTools → Network while analyzing. The code is open source on GitHub."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this work for amazon.in, amazon.co.uk, and other marketplaces?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Request your data from your own marketplace's privacy page (the same account menu path exists on amazon.in, amazon.co.uk, amazon.de, and others). JungleAudit detects the export's columns automatically and handles ₹, $, £, €, and ¥ amounts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How far back does the Amazon export go?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Request My Data export covers the full history Amazon retains for your account — typically every order since you created it. That's what makes it the only reliable source for a true lifetime spending total."
+            }
+          }
+        ]
+      }
+    </script>
+    <style>
+      @font-face {
+        font-family: "Figtree Variable";
+        font-style: normal;
+        font-display: swap;
+        font-weight: 300 900;
+        src: url("/fonts/figtree-latin-wght-normal.woff2") format("woff2-variations");
+      }
+      :root {
+        --bg: #fdfdfd;
+        --ink: #0a0a0b;
+        --muted: #f3f3f3;
+        --muted-ink: #6f6f76;
+        --border: #e9e9ea;
+        --cobalt: #5b5fe0;
+        --radius: 1.5rem;
+        --font-display: "Figtree Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --font-body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        line-height: 1.65;
+        font-size: 1rem;
+      }
+      a { color: inherit; }
+      .wrap { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem; }
+      header.site {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 1rem; padding: 1.5rem 0;
+      }
+      .lockup { display: inline-flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+      .lockup img { width: 2.25rem; height: 2.25rem; border-radius: 9999px; }
+      .lockup span {
+        font-family: var(--font-display); font-weight: 800; font-size: 1.25rem;
+        letter-spacing: -0.02em; text-decoration: underline;
+        text-decoration-thickness: 1.5px; text-underline-offset: 4px;
+      }
+      header.site nav { display: flex; gap: 1.25rem; font-size: 0.9rem; }
+      header.site nav a { text-decoration: none; }
+      header.site nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+      .hero {
+        background: linear-gradient(120deg, #f6d2dd, #a898ec 35%, #93b3ee 65%, #7cdfd2);
+        border-radius: var(--radius);
+        padding: 3.5rem 2rem;
+        margin: 0.5rem 0 2.5rem;
+        text-align: center;
+      }
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        font-size: 0.875rem; font-weight: 500; margin-bottom: 1rem;
+      }
+      .eyebrow::before {
+        content: ""; width: 6px; height: 6px; border-radius: 9999px; background: var(--ink);
+      }
+      h1 {
+        font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em;
+        font-size: clamp(2.1rem, 6vw, 3.25rem); line-height: 1.08;
+      }
+      .hero p.sub { max-width: 34rem; margin: 1.25rem auto 0; color: rgba(10, 10, 11, 0.75); }
+      h2 {
+        font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em;
+        font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; margin: 2.75rem 0 1rem;
+      }
+      h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+      p + p { margin-top: 1rem; }
+      main p, main li { color: #2c2c31; }
+      .panel { background: var(--muted); border-radius: var(--radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+      .panel ol { padding-left: 1.25rem; display: grid; gap: 0.6rem; }
+      .steps { counter-reset: step; list-style: none; padding: 0; display: grid; gap: 1rem; margin: 1.25rem 0; }
+      .steps > li { background: var(--muted); border-radius: var(--radius); padding: 1.5rem 1.75rem; }
+      .steps > li::before {
+        counter-increment: step; content: "Step " counter(step);
+        display: inline-block; font-size: 0.8rem; font-weight: 600;
+        background: var(--ink); color: #fff; border-radius: 9999px;
+        padding: 0.2rem 0.85rem; margin-bottom: 0.75rem;
+      }
+      table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 1.25rem 0; }
+      th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+      th { font-weight: 600; }
+      td code, p code, li code {
+        background: var(--muted); border-radius: 0.4rem; padding: 0.1rem 0.4rem;
+        font-size: 0.85em; white-space: nowrap;
+      }
+      .table-scroll { overflow-x: auto; }
+      .cta-card {
+        background: #0a0a0b; color: #fff; border-radius: var(--radius);
+        padding: 3rem 2rem; text-align: center; margin: 3rem 0 2rem;
+      }
+      .cta-card h2 { color: #fff; margin: 0 0 0.75rem; }
+      .cta-card p { color: rgba(255, 255, 255, 0.7); max-width: 28rem; margin: 0 auto; }
+      .pill {
+        display: inline-block; background: #fff; color: #0a0a0b; font-weight: 600;
+        border-radius: 9999px; padding: 0.8rem 2rem; text-decoration: none; margin-top: 1.5rem;
+      }
+      .pill.dark { background: var(--ink); color: #fff; margin-top: 1.25rem; }
+      details { background: var(--muted); border-radius: 1rem; padding: 1.1rem 1.4rem; margin: 0.6rem 0; }
+      details summary { font-weight: 600; cursor: pointer; }
+      details p { margin-top: 0.6rem; }
+      footer.site {
+        border-top: 1px solid var(--border); margin-top: 3rem; padding: 2rem 0 3rem;
+        display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.9rem; color: var(--muted-ink);
+      }
+      footer.site a { color: var(--muted-ink); }
+      .note { font-size: 0.875rem; color: var(--muted-ink); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site">
+        <a class="lockup" href="/" aria-label="JungleAudit home">
+          <img src="/jungleaudit-logo.webp" alt="" width="224" height="224" />
+          <span>JungleAudit</span>
+        </a>
+        <nav aria-label="Site">
+          <a href="/#/app">Analyzer</a>
+          <a href="/#/privacy">Privacy</a>
+          <a href="https://github.com/nikhilakki/JungleAudit" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <main>
+        <div class="hero">
+          <p class="eyebrow">Free · Private · No account required</p>
+          <h1>How Much Have You Spent on Amazon?</h1>
+          <p class="sub">
+            The order-history CSV button is gone, and Amazon doesn't show a lifetime total
+            anywhere. Here's the free, private way to get your real number in 2026.
+          </p>
+        </div>
+
+        <h2 id="short-answer">The Short Answer.</h2>
+        <p>
+          Amazon retired its <strong>Order History Reports</strong> feature — the page that let
+          you download your orders as a CSV — back in <strong>March 2023</strong>. Since then,
+          the only official way to get your complete order history is Amazon's
+          <strong>Request My Data</strong> export from its privacy portal.
+        </p>
+        <p>
+          Once you have that export, <a href="/">JungleAudit</a> turns it into your lifetime
+          total, monthly spending trends, refunds, and payment breakdowns — free, with no
+          sign-up, and without your order files ever leaving your browser.
+        </p>
+        <div class="panel">
+          <ol>
+            <li><strong>Request</strong> your data from Amazon's privacy portal (2 minutes).</li>
+            <li><strong>Download</strong> the ZIP when Amazon emails you (usually hours to a couple of days).</li>
+            <li><strong>Drop the files into JungleAudit</strong> and see your total — locally, in your browser.</li>
+          </ol>
+        </div>
+
+        <h2 id="steps">Getting Your Number, Step by Step.</h2>
+        <ol class="steps">
+          <li>
+            <h3>Request Your Data From Amazon.</h3>
+            <p>
+              Sign in to Amazon, then open
+              <a href="https://www.amazon.com/hz/privacy-central/data-requests/preview.html" rel="noopener nofollow">Request My Data</a>
+              (also reachable via <em>Account &gt; Data &amp; Privacy</em>). On other marketplaces —
+              amazon.in, amazon.co.uk, amazon.de — the same page exists under your account's
+              privacy settings.
+            </p>
+            <p>
+              Choose <strong>Your Orders</strong> (fastest) or <strong>Request All Your Data</strong>,
+              then submit. <strong>Watch your inbox:</strong> Amazon sends a confirmation email,
+              and the request doesn't start until you click the link in it.
+            </p>
+          </li>
+          <li>
+            <h3>Download the ZIP and Unzip It.</h3>
+            <p>
+              Amazon emails you a download link when the export is ready — usually within a few
+              hours to a couple of days (officially it can take up to 30). Unzip it and you'll
+              find CSV files like these:
+            </p>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>File</th><th>What's inside</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>Order History.csv</code></td><td>Every physical order — dates, totals, payment method</td></tr>
+                  <tr><td><code>Digital Content Orders.csv</code></td><td>Kindle books, apps, and other digital purchases</td></tr>
+                  <tr><td><code>Refund Details.csv</code>, <code>Returns Status.csv</code></td><td>Returns, refund amounts, and return reasons</td></tr>
+                  <tr><td><code>Digital Borrowed Items.csv</code></td><td>Kindle Unlimited and Prime Reading loans</td></tr>
+                  <tr><td><code>Cart History.csv</code>, <code>Replacement Orders.csv</code></td><td>Saved carts and replacement shipments</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="note">
+              On amazon.com, the ZIP uses a different layout: numbered folders such as
+              <code>Retail.OrderHistory.1</code> (containing
+              <code>Retail.OrderHistory.1.csv</code>) and <code>Digital-Ordering.1</code> for
+              digital purchases. Either way, don't rename anything — JungleAudit detects the
+              file types and column layouts it knows automatically, and tells you if a file
+              can't be mapped.
+            </p>
+          </li>
+          <li>
+            <h3>See Your Total — Without Uploading Anything.</h3>
+            <p>
+              Open the <a href="/#/app">JungleAudit analyzer</a>, accept the local-only notice,
+              and drop in the unzipped folder. The analysis runs on your device using DuckDB in a
+              browser worker — there is no server upload step. You can verify that yourself in
+              DevTools → Network while it runs.
+            </p>
+            <p>You'll get:</p>
+            <div class="panel">
+              <ol>
+                <li>Lifetime spend and order count — the number you came for</li>
+                <li>Monthly and yearly trend charts</li>
+                <li>Spend by payment method (cards, UPI, gift balance)</li>
+                <li>Refunds, net spend, and top return reasons</li>
+                <li>Kindle Unlimited and library borrowing activity</li>
+              </ol>
+            </div>
+            <a class="pill dark" href="/#/app">Analyze my Amazon export — free</a>
+          </li>
+        </ol>
+
+        <h2 id="alternatives">Other Ways to Check (and Their Limits).</h2>
+        <p>
+          <strong>The Amazon Transactions page</strong> (under <em>Account &gt; Payments</em>)
+          lists individual charges page by page, but it has no totals and no export — fine for
+          "what was that charge?", impractical for "what have I spent since 2015?".
+        </p>
+        <p>
+          <strong>Bank and card statements</strong> can be summed, but Amazon batches and splits
+          charges per shipment, mixes in refunds, and tells you nothing about what you bought.
+        </p>
+        <p>
+          <strong>Browser extensions</strong> that scrape your order pages do work, but they run
+          with access to your signed-in Amazon session — read their privacy policies carefully.
+          JungleAudit takes the opposite approach: it only ever sees the export file you hand it,
+          and only inside your own browser.
+        </p>
+
+        <h2 id="faq">Questions, Answered.</h2>
+        <details>
+          <summary>Can I still download my Amazon order history as a CSV?</summary>
+          <p>
+            Not from the old Order History Reports page — Amazon retired that feature in March
+            2023. The only official way to get your complete order history now is a Request My
+            Data export from Amazon's privacy portal, which arrives as a ZIP of CSV files.
+          </p>
+        </details>
+        <details>
+          <summary>How long does Amazon's Request My Data export take?</summary>
+          <p>
+            Usually a few hours to a couple of days. Amazon officially allows itself up to 30
+            days, but most order-history requests complete much faster. You'll get an email with
+            a download link when it's ready.
+          </p>
+        </details>
+        <details>
+          <summary>Is it safe to analyze my Amazon export with an online tool?</summary>
+          <p>
+            It depends on the tool. JungleAudit runs entirely in your browser using DuckDB WASM —
+            your CSV files are never uploaded to a server, and you can verify that yourself in
+            DevTools → Network while analyzing. The code is
+            <a href="https://github.com/nikhilakki/JungleAudit" rel="noopener">open source on GitHub</a>.
+          </p>
+        </details>
+        <details>
+          <summary>Does this work for amazon.in, amazon.co.uk, and other marketplaces?</summary>
+          <p>
+            Yes. Request your data from your own marketplace's privacy page (the same account
+            menu path exists on amazon.in, amazon.co.uk, amazon.de, and others). JungleAudit
+            detects the export's columns automatically and handles ₹, $, £, €, and ¥ amounts.
+          </p>
+        </details>
+        <details>
+          <summary>How far back does the Amazon export go?</summary>
+          <p>
+            The Request My Data export covers the full history Amazon retains for your account —
+            typically every order since you created it. That's what makes it the only reliable
+            source for a true lifetime spending total.
+          </p>
+        </details>
+
+        <div class="cta-card">
+          <h2>See Your Number.</h2>
+          <p>
+            Drop your Amazon export into JungleAudit and get your lifetime total, trends, and
+            refunds in under a minute — free, open source, and nothing leaves your device.
+          </p>
+          <a class="pill" href="/#/app">Start analyzing</a>
+        </div>
+      </main>
+
+      <footer class="site">
+        <a href="/">JungleAudit home</a>
+        <a href="/#/app">Analyzer</a>
+        <a href="/#/privacy">Privacy</a>
+        <a href="https://github.com/nikhilakki/JungleAudit" rel="noopener">GitHub</a>
+      </footer>
+    </div>
+  </body>
+</html>

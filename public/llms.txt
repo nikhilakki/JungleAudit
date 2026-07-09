@@ -16,6 +16,7 @@ JungleAudit is an open-source web application that uses DuckDB WASM in a browser
 
 - [Home / landing](https://jungleaudit.org/)
 - [Analyzer app](https://jungleaudit.org/#/app)
+- [Guide: How much have I spent on Amazon?](https://jungleaudit.org/how-much-have-i-spent-on-amazon/)
 - [Privacy policy](https://jungleaudit.org/#/privacy)
 - [Terms of use](https://jungleaudit.org/#/terms)
 - [Disclaimer](https://jungleaudit.org/#/disclaimer)

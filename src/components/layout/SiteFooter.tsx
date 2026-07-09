@@ -36,41 +36,63 @@ export function SiteFooter({ onNavigate, onStartApp }: SiteFooterProps) {
             className="flex flex-wrap items-center gap-x-6 gap-y-4 text-sm md:flex-col md:items-end md:gap-y-3"
             aria-label="Site"
           >
-            <button
-              type="button"
+            <a
+              href="#/"
               className="link-underline"
-              onClick={() => onNavigate("landing")}
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate("landing");
+              }}
             >
               Home
-            </button>
-            <button
-              type="button"
+            </a>
+            <a
+              href="#/app"
               className="link-underline"
-              onClick={() => (onStartApp ? onStartApp() : onNavigate("app"))}
+              onClick={(event) => {
+                event.preventDefault();
+                if (onStartApp) {
+                  onStartApp();
+                } else {
+                  onNavigate("app");
+                }
+              }}
             >
               Analyzer
-            </button>
-            <button
-              type="button"
+            </a>
+            <a href="/how-much-have-i-spent-on-amazon/" className="link-underline">
+              Spending Guide
+            </a>
+            <a
+              href="#/disclaimer"
               className="link-underline"
-              onClick={() => onNavigate("disclaimer")}
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate("disclaimer");
+              }}
             >
               Disclaimer
-            </button>
-            <button
-              type="button"
+            </a>
+            <a
+              href="#/privacy"
               className="link-underline"
-              onClick={() => onNavigate("privacy")}
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate("privacy");
+              }}
             >
               Privacy
-            </button>
-            <button
-              type="button"
+            </a>
+            <a
+              href="#/terms"
               className="link-underline"
-              onClick={() => onNavigate("terms")}
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate("terms");
+              }}
             >
               Terms of Service
-            </button>
+            </a>
           </nav>
 
           <div className="flex items-center gap-3">

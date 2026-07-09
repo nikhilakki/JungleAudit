@@ -12,7 +12,9 @@ export const SITE_DESCRIPTION =
 export const SITE_URL =
   import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ?? "https://jungleaudit.org";
 
-export const SITE_OG_IMAGE = `${SITE_URL}/landing-hero.webp`;
+// Must stay the purpose-built 1200×630 share card — index.html's static
+// og:image:width/height/alt tags describe this file.
+export const SITE_OG_IMAGE = `${SITE_URL}/og-image.webp`;
 
 export const SITE_KEYWORDS = [
   "Amazon spend analyzer",

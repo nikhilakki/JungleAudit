@@ -1,13 +1,12 @@
 import { LANDING_FAQ } from "@/lib/site";
 
 export function LandingFaq() {
+  // FAQ schema lives as FAQPage JSON-LD in index.html — keep these Q&As in sync.
   return (
     <section
       id="faq"
       aria-labelledby="faq-heading"
       className="mx-auto w-full max-w-6xl scroll-mt-24 px-4 md:px-8"
-      itemScope
-      itemType="https://schema.org/FAQPage"
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
         <div className="flex flex-col gap-4">
@@ -32,12 +31,9 @@ export function LandingFaq() {
             <details
               key={item.question}
               className="group rounded-2xl bg-muted px-6 py-5"
-              itemScope
-              itemProp="mainEntity"
-              itemType="https://schema.org/Question"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold marker:content-none [&::-webkit-details-marker]:hidden">
-                <span itemProp="name">{item.question}</span>
+                <span>{item.question}</span>
                 <span
                   aria-hidden="true"
                   className="flex size-8 shrink-0 items-center justify-center rounded-full bg-card text-lg font-normal leading-none text-foreground/70 transition-transform group-open:rotate-45"
@@ -45,13 +41,8 @@ export function LandingFaq() {
                   +
                 </span>
               </summary>
-              <div
-                className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground"
-                itemScope
-                itemProp="acceptedAnswer"
-                itemType="https://schema.org/Answer"
-              >
-                <p itemProp="text">{item.answer}</p>
+              <div className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                <p>{item.answer}</p>
               </div>
             </details>
           ))}

@@ -29,3 +29,9 @@
 - [ ] OPFS persistence
 - [ ] Static deployment polish (screenshot, GitHub Pages base path)
 - [ ] Optional LLM categorization (opt-in, off by default)
+
+## Data compatibility
+
+- [ ] Verify amazon.com "Your Orders" exports (Retail.OrderHistory.N.csv,
+      Digital-Ordering.N) against a real US export — filename detection and the
+      "total owed" price alias were added from documentation, not a live sample

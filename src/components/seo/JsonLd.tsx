@@ -1,5 +1,3 @@
-import { LANDING_FAQ } from "@/lib/site";
-
 type JsonLdProps = {
   route: "landing" | "app" | "privacy" | "terms" | "disclaimer";
 };
@@ -16,19 +14,8 @@ function JsonLdScript({ data }: { data: Record<string, unknown> }) {
 export function JsonLd({ route }: JsonLdProps) {
   if (route !== "landing") return null;
 
-  const faq = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: LANDING_FAQ.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-
+  // FAQPage JSON-LD lives statically in index.html <head> — do not duplicate it
+  // here or Google sees two FAQPage blocks on the rendered page.
   const howTo = {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -63,10 +50,5 @@ export function JsonLd({ route }: JsonLdProps) {
     ],
   };
 
-  return (
-    <>
-      <JsonLdScript data={faq} />
-      <JsonLdScript data={howTo} />
-    </>
-  );
+  return <JsonLdScript data={howTo} />;
 }

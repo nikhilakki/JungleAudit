@@ -31,12 +31,18 @@ function upsertLink(rel: string, href: string): void {
 export function useSiteHead(route: AppRoute): void {
   useEffect(() => {
     const meta = ROUTE_META[route] ?? ROUTE_META.landing;
-    const canonical = `${SITE_URL}/#${meta.path === "/" ? "/" : meta.path}`;
+    // Fragments are invalid in canonical URLs and crawlers strip them — every
+    // hash route is the same document, so they all canonicalize to the origin.
+    const canonical = `${SITE_URL}/`;
 
     document.title = meta.title;
 
     upsertMeta('meta[name="description"]', { name: "description" }, meta.description);
-    upsertMeta('meta[name="robots"]', { name: "robots" }, meta.index ? "index,follow" : "noindex,follow");
+    upsertMeta(
+      'meta[name="robots"]',
+      { name: "robots" },
+      meta.index ? "index,follow,max-image-preview:large" : "noindex,follow",
+    );
 
     upsertMeta('meta[property="og:title"]', { property: "og:title" }, meta.title);
     upsertMeta(
