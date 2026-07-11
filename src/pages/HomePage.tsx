@@ -11,6 +11,7 @@ import { RefundTrendChart } from "@/components/dashboard/RefundTrendChart";
 import { ReturnReasonsChart } from "@/components/dashboard/ReturnReasonsChart";
 import { SpendSummary } from "@/components/dashboard/SpendSummary";
 import { SpendTrendChart } from "@/components/dashboard/SpendTrendChart";
+import { SqlConsole } from "@/components/dashboard/SqlConsole";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { FileDropzone } from "@/components/upload/FileDropzone";
 import { SchemaPreview } from "@/components/upload/SchemaPreview";
@@ -81,7 +82,8 @@ function MetaChip({ children }: { children: ReactNode }) {
 }
 
 export function HomePage() {
-  const { status, error, schemas, hasOrderData, uploadFiles } = useDuckDB();
+  const { status, error, schemas, hasOrderData, uploadFiles, resetData } =
+    useDuckDB();
   const [summary, setSummary] = useState<SpendSummaryData | null>(null);
   const [trend, setTrend] = useState<PeriodSpend[]>([]);
   const [currency, setCurrency] = useState<CurrencyInfo | null>(null);
@@ -366,6 +368,10 @@ export function HomePage() {
         </section>
       ) : schemas.length > 0 ? (
         <DataCoveragePanel schemas={schemas} />
+      ) : null}
+
+      {schemas.length > 0 ? (
+        <SqlConsole schemas={schemas} busy={isBusy} onResetData={resetData} />
       ) : null}
 
       {schemas.length > 0 ? <SchemaPreview schemas={schemas} /> : null}

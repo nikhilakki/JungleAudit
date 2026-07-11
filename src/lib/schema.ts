@@ -321,46 +321,55 @@ export function buildColumnMappings(
   fileType: AmazonFileType,
   columns: DetectedColumn[],
 ): ColumnMapping[] {
-  const aliases = FIELD_ALIASES[fileType] ?? {};
+  const aliases = Object.entries(FIELD_ALIASES[fileType] ?? {}) as Array<
+    [CanonicalField, string[]]
+  >;
   const usedCanonical = new Set<CanonicalField>();
+  const normalized = columns.map((c) => normalizeHeader(c.column_name));
 
-  const mappings: ColumnMapping[] = columns.map((column) => {
-    const normalized = normalizeHeader(column.column_name);
-    let best: {
-      canonical: CanonicalField;
-      confidence: MappingConfidence;
-    } | null = null;
+  const mappings: ColumnMapping[] = columns.map((column) => ({
+    canonical: null,
+    sourceColumn: column.column_name,
+    confidence: "unmapped" as MappingConfidence,
+  }));
 
-    for (const [canonical, patterns] of Object.entries(aliases) as Array<
-      [CanonicalField, string[]]
-    >) {
-      if (usedCanonical.has(canonical)) continue;
-      for (const alias of patterns) {
-        if (normalized === alias) {
-          best = { canonical, confidence: "exact" };
-          break;
-        }
-        if (!best && aliasMatches(normalized, alias)) {
-          best = { canonical, confidence: "fuzzy" };
-        }
-      }
-      if (best?.confidence === "exact") break;
-    }
-
-    if (best) {
-      usedCanonical.add(best.canonical);
-      return {
-        canonical: best.canonical,
-        sourceColumn: column.column_name,
-        confidence: best.confidence,
-      };
-    }
-
-    return {
-      canonical: null,
-      sourceColumn: column.column_name,
-      confidence: "unmapped",
+  const claim = (
+    index: number,
+    canonical: CanonicalField,
+    confidence: MappingConfidence,
+  ) => {
+    usedCanonical.add(canonical);
+    mappings[index] = {
+      canonical,
+      sourceColumn: columns[index].column_name,
+      confidence,
     };
+  };
+
+  // Pass 1: exact matches first, so a precise header (e.g. "Refund Amount")
+  // always beats a fuzzy sibling ("Direct Debit Refund Amount") no matter
+  // which column appears first in the file.
+  mappings.forEach((mapping, index) => {
+    if (mapping.canonical) return;
+    for (const [canonical, patterns] of aliases) {
+      if (usedCanonical.has(canonical)) continue;
+      if (patterns.some((alias) => normalized[index] === alias)) {
+        claim(index, canonical, "exact");
+        break;
+      }
+    }
+  });
+
+  // Pass 2: fuzzy matches fill whatever exact matching left unclaimed.
+  mappings.forEach((mapping, index) => {
+    if (mapping.canonical) return;
+    for (const [canonical, patterns] of aliases) {
+      if (usedCanonical.has(canonical)) continue;
+      if (patterns.some((alias) => aliasMatches(normalized[index], alias))) {
+        claim(index, canonical, "fuzzy");
+        break;
+      }
+    }
   });
 
   return mappings;
