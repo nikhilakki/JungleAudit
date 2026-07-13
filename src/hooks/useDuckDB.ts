@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createCanonicalViews,
   initDuckDB,
@@ -19,6 +19,9 @@ export function useDuckDB() {
   const [status, setStatus] = useState<AppStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [schemas, setSchemas] = useState<FileSchemaInfo[]>([]);
+  // Retained so "Reset data" can rebuild everything from the original files
+  // (e.g. after a stray write in the SQL console). Never leaves the browser.
+  const filesRef = useRef<File[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -52,6 +55,9 @@ export function useDuckDB() {
       await createCanonicalViews(ingested);
       setSchemas(ingested);
       setStatus("ready");
+      // Retain only a known-good set: a failed ingest must not overwrite the
+      // last dataset that "Reset data" can restore.
+      filesRef.current = files;
       return ingested;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -60,6 +66,22 @@ export function useDuckDB() {
       throw err;
     }
   }, []);
+
+  const resetData = useCallback(async () => {
+    const files = filesRef.current;
+    if (files.length === 0) return;
+    // Re-read the retained files BEFORE the DB is wiped. If the OS can no
+    // longer read them (moved/deleted since upload), abort with the working
+    // dataset intact rather than destroying it mid-reset.
+    try {
+      await Promise.all(files.map((file) => file.arrayBuffer()));
+    } catch {
+      throw new Error(
+        "Couldn't re-read your original files — they may have been moved or changed since upload. Your data is untouched; re-upload to start fresh.",
+      );
+    }
+    await uploadFiles(files);
+  }, [uploadFiles]);
 
   const hasOrderData = schemas.some((schema) =>
     ORDER_FILE_TYPES.includes(schema.fileType),
@@ -71,5 +93,6 @@ export function useDuckDB() {
     schemas,
     hasOrderData,
     uploadFiles,
+    resetData,
   };
 }

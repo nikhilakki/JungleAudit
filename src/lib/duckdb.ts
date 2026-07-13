@@ -1,4 +1,5 @@
 import type {
+  SqlConsoleData,
   WorkerRequest,
   WorkerRequestPayload,
   WorkerResponse,
@@ -105,6 +106,22 @@ export async function createCanonicalViews(
   if (response.type !== "viewsCreated") {
     throw new Error("Failed to create canonical views");
   }
+}
+
+/** Validated read-only query for the SQL console; rows are capped worker-side. */
+export async function runConsoleQuery(sql: string): Promise<SqlConsoleData> {
+  const response = await sendRequest<
+    Extract<WorkerResponse, { type: "sqlConsoleResult" }>
+  >({
+    type: "sqlConsole",
+    sql,
+  });
+
+  if (response.type !== "sqlConsoleResult") {
+    throw new Error("Unexpected console query response");
+  }
+
+  return response.data;
 }
 
 export async function runQuery<T extends Record<string, unknown>>(
