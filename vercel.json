@@ -1,3 +1,17 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.jungleaudit.org" }],
+      "destination": "https://jungleaudit.org/:path*",
+      "permanent": true
+    },
+    { "source": "/app", "destination": "/#/app", "permanent": false },
+    { "source": "/analyze", "destination": "/#/app", "permanent": false },
+    { "source": "/home", "destination": "/#/app", "permanent": false },
+    { "source": "/privacy", "destination": "/#/privacy", "permanent": false },
+    { "source": "/terms", "destination": "/#/terms", "permanent": false },
+    { "source": "/tos", "destination": "/#/terms", "permanent": false },
+    { "source": "/disclaimer", "destination": "/#/disclaimer", "permanent": false }
+  ]
 }

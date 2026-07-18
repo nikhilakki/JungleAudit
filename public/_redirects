@@ -1,1 +1,14 @@
-/*    /index.html   200
+# No SPA catch-all.
+#
+# This app uses hash routes (/#/app, /#/privacy), so only "/" needs index.html.
+# A /* → /index.html rewrite made every unknown path a soft-duplicate of the
+# homepage (same HTML + homepage canonical → GSC "Alternative page with proper
+# canonical tag").
+#
+# Host consolidations (www / pages.dev → apex) and path→hash redirects live in
+# functions/_middleware.js — Cloudflare Pages does not support domain-level
+# rules in this file.
+#
+# Trailing-slash normalization for directories (e.g. /how-much-have-i-spent-on-amazon
+# → /how-much-have-i-spent-on-amazon/) is handled automatically by Cloudflare
+# and is expected to appear once as "Page with redirect" until Google drops it.
